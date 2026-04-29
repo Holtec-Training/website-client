@@ -7,8 +7,8 @@ export default defineConfig({
   name: 'default',
   title: 'Holtec Training',
 
-  projectId: '2sbbzydz',
-  dataset: 'production',
+  projectId: import.meta.env.SANITY_STUDIO_PROJECT_ID,
+  dataset: import.meta.env.SANITY_STUDIO_DATASET,
 
   plugins: [structureTool(), visionTool()],
 
