@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { MapPin, User, ArrowLeft, Award } from 'lucide-react'
 import { sanityClient } from '../lib/sanity'
 import type { Trainer } from '../types/trainer'
@@ -26,7 +26,6 @@ const TRAINER_QUERY = `
 
 export default function TrainerProfile() {
   const { slug } = useParams<{ slug: string }>()
-  const navigate = useNavigate()
   const [trainer, setTrainer] = useState<Trainer | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
