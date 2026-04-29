@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+studio-holtec-training/node_modules/
+
+# Build output
+dist/
+studio-holtec-training/dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Vite
+*.local
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+*.md
+Holtec-site-index-light.html
