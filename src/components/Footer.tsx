@@ -85,8 +85,6 @@ export default function Footer() {
             <ul className="flex flex-col gap-2.5 text-[14px] list-none m-0 p-0">
               {[
                 { to: '/contact', label: 'Apply to join' },
-                { to: '/about',   label: 'How it works' },
-                { to: '/contact', label: 'Get in touch' },
               ].map(({ to, label }) => (
                 <li key={label}>
                   <Link

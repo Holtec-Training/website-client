@@ -37,6 +37,7 @@ export default function Contact() {
   const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(false)
+  const [trainerError, setTrainerError] = useState(false)
 
   useEffect(() => {
     sanityClient.fetch<Trainer[]>(TRAINERS_QUERY).then((data) => {
@@ -61,6 +62,12 @@ export default function Contact() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(false)
+
+    if (contactType === 'client' && !selectedTrainer) {
+      setTrainerError(true)
+      return
+    }
+    setTrainerError(false)
 
     fetch('https://spurstate.cloud/holtec-training/webhook/b0da62f5-a6bb-4abd-835f-653762ac9540', {
       method: 'POST',
@@ -162,18 +169,25 @@ export default function Contact() {
           {/* Conditional trainer selection */}
           {contactType === 'client' && (
             <div
-              className="rounded-[var(--radius)] p-5"
+              className="rounded-[var(--radius)] p-5 transition-colors duration-150"
               style={{
                 background: 'var(--surface)',
-                border: '1px solid var(--border)',
+                border: trainerError ? '1px solid #ef4444' : '1px solid var(--border)',
               }}
             >
-              <span
-                className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em] block mb-3"
-                style={{ color: 'var(--muted)' }}
-              >
-                Which trainer are you interested in?
-              </span>
+              <div className="flex items-center justify-between mb-3">
+                <span
+                  className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em]"
+                  style={{ color: 'var(--muted)' }}
+                >
+                  Which trainer are you interested in?
+                </span>
+                {trainerError && (
+                  <span className="font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.06em]" style={{ color: '#ef4444' }}>
+                    Please select a trainer
+                  </span>
+                )}
+              </div>
               <div className="flex flex-col gap-2">
                 {trainers.map((trainer) => (
                   <label
@@ -191,7 +205,7 @@ export default function Contact() {
                       name="trainer-choice"
                       value={trainer.name}
                       checked={selectedTrainer === trainer.name}
-                      onChange={() => setSelectedTrainer(trainer.name)}
+                      onChange={() => { setSelectedTrainer(trainer.name); setTrainerError(false) }}
                       style={{ accentColor: 'var(--blue)', width: '16px', height: '16px' }}
                     />
                     <div>
