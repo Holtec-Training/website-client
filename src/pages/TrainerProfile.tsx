@@ -229,52 +229,26 @@ export default function TrainerProfile() {
           )}
 
           {/* Booking button */}
-          {trainer.bookingUrl ? (
-            <a
-              href={trainer.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] px-8 py-3 rounded-lg transition-all duration-200"
-              style={{
-                background: 'var(--blue)',
-                color: '#fff',
-                textDecoration: 'none',
-                border: '1px solid var(--blue)',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.opacity = '0.85'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.opacity = '1'
-              }}
-            >
-              Book a Session
-            </a>
-          ) : (
-            <Link
-              to="/contact"
-              state={{ trainer: trainer.name }}
-              className="inline-block font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] px-8 py-3 rounded-lg transition-all duration-200"
-              style={{
-                background: 'var(--blue)',
-                color: '#fff',
-                textDecoration: 'none',
-                border: '1px solid var(--blue)',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.opacity = '0.85'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.opacity = '1'
-              }}
-            >
-              Get in Touch
-            </Link>
-          )}
+          <Link
+            to={`/contact?trainer=${trainer.slug.current}`}
+            className="inline-block font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] px-8 py-3 rounded-lg transition-all duration-200"
+            style={{
+              background: 'var(--blue)',
+              color: '#fff',
+              textDecoration: 'none',
+              border: '1px solid var(--blue)',
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement
+              el.style.opacity = '0.85'
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement
+              el.style.opacity = '1'
+            }}
+          >
+            Book a Session
+          </Link>
         </div>
       </div>
     </div>

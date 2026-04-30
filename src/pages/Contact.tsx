@@ -1,5 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
+import { sanityClient } from '../lib/sanity'
 
 interface LocationState {
   trainer?: string
@@ -9,29 +10,47 @@ interface Trainer {
   name: string
   spec: string
   location: string
+  slug: { current: string }
 }
 
-const TRAINERS: Trainer[] = [
-  { name: 'Jamie Holloway', spec: 'Strength & Fat Loss',   location: 'Manchester' },
-  { name: 'Priya Nair',     spec: 'Cardio & Nutrition',    location: 'London'     },
-  { name: 'Marcus Webb',    spec: 'Powerlifting & Rehab',  location: 'Birmingham' },
-  { name: 'Ella Sutton',    spec: 'Body Composition',      location: 'Leeds'      },
-  { name: 'Tom Chadwick',   spec: 'Functional Fitness',    location: 'Bristol'    },
-  { name: 'Aisha Okonkwo',  spec: 'Mobility & Wellness',   location: 'London'     },
-]
+const TRAINERS_QUERY = `
+  *[_type == "trainer"] | order(name asc) {
+    name, spec, location, slug { current }
+  }
+`
 
 export default function Contact() {
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const state = location.state as LocationState | null
   const preSelectedTrainer = state?.trainer ?? ''
+  const trainerSlugParam = searchParams.get('trainer') ?? ''
 
+  const [trainers, setTrainers] = useState<Trainer[]>([])
   const [contactType, setContactType] = useState<string>(
     preSelectedTrainer ? 'client' : ''
   )
   const [selectedTrainer, setSelectedTrainer] = useState<string>(preSelectedTrainer)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState(false)
 
-  // If navigated with a trainer pre-selected, ensure type is set to client
+  useEffect(() => {
+    sanityClient.fetch<Trainer[]>(TRAINERS_QUERY).then((data) => {
+      setTrainers(data)
+      if (trainerSlugParam) {
+        const match = data.find(t => t.slug.current === trainerSlugParam)
+        if (match) {
+          setSelectedTrainer(match.name)
+          setContactType('client')
+        }
+      }
+    })
+  }, [trainerSlugParam])
+
   useEffect(() => {
     if (preSelectedTrainer) {
       setContactType('client')
@@ -41,7 +60,24 @@ export default function Contact() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setSubmitted(true)
+    setError(false)
+
+    fetch('https://spurstate.cloud/holtec-training/webhook/b0da62f5-a6bb-4abd-835f-653762ac9540', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source: 'Holtec Training Website',
+        firstName,
+        lastName,
+        email,
+        contactType,
+        trainer: selectedTrainer,
+        message,
+        submittedAt: new Date().toISOString(),
+      }),
+    })
+      .then(() => setSubmitted(true))
+      .catch(() => setError(true))
   }
 
   return (
@@ -70,16 +106,22 @@ export default function Contact() {
             <FormGroup label="First Name">
               <input
                 type="text"
+                name="firstName"
                 placeholder="Your first name"
                 required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="form-input"
               />
             </FormGroup>
             <FormGroup label="Last Name">
               <input
                 type="text"
+                name="lastName"
                 placeholder="Your last name"
                 required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 className="form-input"
               />
             </FormGroup>
@@ -89,8 +131,11 @@ export default function Contact() {
           <FormGroup label="Email">
             <input
               type="email"
+              name="email"
               placeholder="you@email.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="form-input"
             />
           </FormGroup>
@@ -98,6 +143,7 @@ export default function Contact() {
           {/* Contact type */}
           <FormGroup label="I am a…">
             <select
+              name="contactType"
               value={contactType}
               onChange={(e) => {
                 setContactType(e.target.value)
@@ -129,7 +175,7 @@ export default function Contact() {
                 Which trainer are you interested in?
               </span>
               <div className="flex flex-col gap-2">
-                {TRAINERS.map((trainer) => (
+                {trainers.map((trainer) => (
                   <label
                     key={trainer.name}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors duration-150 border border-transparent"
@@ -180,7 +226,10 @@ export default function Contact() {
             }
           >
             <textarea
+              name="message"
               placeholder="Tell us a bit about your goals, availability, or anything else…"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="form-input"
               style={{ resize: 'vertical', minHeight: '120px' }}
             />
@@ -206,7 +255,6 @@ export default function Contact() {
         </form>
       )}
 
-      {/* Success state */}
       {submitted && (
         <div
           className="rounded-[var(--radius)] p-6 text-center mt-6"
@@ -223,6 +271,20 @@ export default function Contact() {
           </h4>
           <p className="text-[14px] m-0" style={{ color: 'var(--muted)' }}>
             Thanks for reaching out. We'll be in touch within 24 hours.
+          </p>
+        </div>
+      )}
+
+      {error && (
+        <div
+          className="rounded-[var(--radius)] p-4 mt-4"
+          style={{
+            background: 'rgba(220,38,38,0.08)',
+            border: '1px solid rgba(220,38,38,0.25)',
+          }}
+        >
+          <p className="text-[14px] m-0" style={{ color: '#ef4444' }}>
+            Something went wrong sending your message. Please try again or email us directly.
           </p>
         </div>
       )}

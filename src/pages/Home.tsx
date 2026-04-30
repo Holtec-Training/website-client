@@ -56,7 +56,7 @@ export default function Home() {
             Browse Trainers
           </Link>
           <Link
-            to="/about"
+            to="/contact"
             className="font-barlow-condensed font-bold text-[17px] uppercase tracking-[0.05em] no-underline inline-block px-8 py-3.5 rounded-[var(--radius)] transition-all duration-200 hover:-translate-y-px"
             style={{
               color: 'var(--text)',
@@ -64,7 +64,7 @@ export default function Home() {
               border: '1px solid var(--border)',
             }}
           >
-            About Holtec
+            Connect
           </Link>
         </div>
       </section>
@@ -109,7 +109,6 @@ export default function Home() {
 
       {/* ── Two-path section ── */}
       <div className="grid grid-cols-2 gap-6 max-w-[1100px] mx-auto px-12 py-[100px] max-[768px]:grid-cols-1 max-[768px]:px-5 max-[768px]:py-[60px]">
-        {/* Card 1 */}
         <PathCard
           to="/trainers"
           icon={<User size={26} stroke="#5bc8f5" strokeWidth={2} />}
@@ -117,8 +116,6 @@ export default function Home() {
           description="Browse our roster of passionate, newly qualified PTs. Every trainer is vetted by Holtec — energetic, committed, and ready to work with you."
           linkLabel="View Trainers"
         />
-
-        {/* Card 2 */}
         <PathCard
           to="/contact"
           icon={<CheckCircle size={26} stroke="#5bc8f5" strokeWidth={2} />}
@@ -150,14 +147,12 @@ function PathCard({ to, icon, title, description, linkLabel }: PathCardProps) {
         cursor: 'pointer',
       }}
       onMouseEnter={(e) => {
-        ;(e.currentTarget as HTMLElement).style.borderColor =
-          'rgba(91,200,245,0.3)'
+        ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(91,200,245,0.3)'
       }}
       onMouseLeave={(e) => {
         ;(e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'
       }}
     >
-      {/* Icon container */}
       <div
         className="w-[52px] h-[52px] rounded-xl flex items-center justify-center mb-6"
         style={{ background: 'rgba(21,101,216,0.2)' }}
