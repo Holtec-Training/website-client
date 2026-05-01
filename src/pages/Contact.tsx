@@ -69,7 +69,7 @@ export default function Contact() {
     }
     setTrainerError(false)
 
-    fetch('/api/contact', {
+    fetch('/.netlify/functions/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
