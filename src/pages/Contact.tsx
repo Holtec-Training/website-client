@@ -34,6 +34,7 @@ export default function Contact() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(false)
@@ -59,6 +60,14 @@ export default function Contact() {
     }
   }, [preSelectedTrainer])
 
+  const isFormValid =
+    firstName.trim() !== '' &&
+    lastName.trim() !== '' &&
+    email.trim() !== '' &&
+    phone.trim() !== '' &&
+    contactType !== '' &&
+    (contactType !== 'client' || selectedTrainer !== '')
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(false)
@@ -77,6 +86,7 @@ export default function Contact() {
         firstName,
         lastName,
         email,
+        phone,
         contactType,
         trainer: selectedTrainer,
         message,
@@ -143,6 +153,19 @@ export default function Contact() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+            />
+          </FormGroup>
+
+          {/* Phone */}
+          <FormGroup label="Phone">
+            <input
+              type="tel"
+              name="phone"
+              placeholder="+64 21 123 4567"
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               className="form-input"
             />
           </FormGroup>
@@ -255,13 +278,19 @@ export default function Contact() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.05em] text-white py-4 rounded-[var(--radius)] cursor-pointer transition-all duration-200"
-            style={{ background: 'var(--blue)', border: 'none' }}
+            disabled={!isFormValid}
+            className="w-full font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.05em] text-white py-4 rounded-[var(--radius)] transition-all duration-200"
+            style={{
+              background: isFormValid ? 'var(--blue)' : 'var(--surface)',
+              border: isFormValid ? 'none' : '1px solid var(--border)',
+              color: isFormValid ? '#fff' : 'var(--muted)',
+              cursor: isFormValid ? 'pointer' : 'not-allowed',
+            }}
             onMouseEnter={(e) => {
-              ;(e.currentTarget as HTMLButtonElement).style.background = '#1a75f0'
+              if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = '#1a75f0'
             }}
             onMouseLeave={(e) => {
-              ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--blue)'
+              if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = 'var(--blue)'
             }}
           >
             Send Message
