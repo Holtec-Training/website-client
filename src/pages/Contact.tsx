@@ -39,6 +39,14 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(false)
   const [trainerError, setTrainerError] = useState(false)
+  const [touched, setTouched] = useState({ firstName: false, lastName: false, email: false })
+
+  const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ'-]{2,}(\s[a-zA-ZÀ-ÖØ-öø-ÿ'-]{1,})*$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  const firstNameError = touched.firstName && !nameRegex.test(firstName.trim())
+  const lastNameError = touched.lastName && !nameRegex.test(lastName.trim())
+  const emailError = touched.email && !emailRegex.test(email.trim())
 
   useEffect(() => {
     sanityClient.fetch<Trainer[]>(TRAINERS_QUERY).then((data) => {
@@ -61,9 +69,9 @@ export default function Contact() {
   }, [preSelectedTrainer])
 
   const isFormValid =
-    firstName.trim() !== '' &&
-    lastName.trim() !== '' &&
-    email.trim() !== '' &&
+    nameRegex.test(firstName.trim()) &&
+    nameRegex.test(lastName.trim()) &&
+    emailRegex.test(email.trim()) &&
     phone.trim() !== '' &&
     contactType !== '' &&
     (contactType !== 'client' || selectedTrainer !== '')
@@ -120,7 +128,7 @@ export default function Contact() {
         >
           {/* Name row */}
           <div className="grid grid-cols-2 gap-5 max-[768px]:grid-cols-1">
-            <FormGroup label="First Name">
+            <FormGroup label="First Name" error={firstNameError ? 'Enter a valid name' : undefined}>
               <input
                 type="text"
                 name="firstName"
@@ -128,10 +136,12 @@ export default function Contact() {
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                onBlur={() => setTouched(t => ({ ...t, firstName: true }))}
                 className="form-input"
+                style={firstNameError ? { borderColor: '#ef4444' } : undefined}
               />
             </FormGroup>
-            <FormGroup label="Last Name">
+            <FormGroup label="Last Name" error={lastNameError ? 'Enter a valid name' : undefined}>
               <input
                 type="text"
                 name="lastName"
@@ -139,13 +149,15 @@ export default function Contact() {
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                onBlur={() => setTouched(t => ({ ...t, lastName: true }))}
                 className="form-input"
+                style={lastNameError ? { borderColor: '#ef4444' } : undefined}
               />
             </FormGroup>
           </div>
 
           {/* Email */}
-          <FormGroup label="Email">
+          <FormGroup label="Email" error={emailError ? 'Enter a valid email address' : undefined}>
             <input
               type="email"
               name="email"
@@ -153,7 +165,9 @@ export default function Contact() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setTouched(t => ({ ...t, email: true }))}
               className="form-input"
+              style={emailError ? { borderColor: '#ef4444' } : undefined}
             />
           </FormGroup>
 
@@ -338,17 +352,28 @@ export default function Contact() {
 interface FormGroupProps {
   label: React.ReactNode
   children: React.ReactNode
+  error?: string
 }
 
-function FormGroup({ label, children }: FormGroupProps) {
+function FormGroup({ label, children, error }: FormGroupProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label
-        className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em]"
-        style={{ color: 'var(--muted)' }}
-      >
-        {label}
-      </label>
+      <div className="flex items-center justify-between">
+        <label
+          className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em]"
+          style={{ color: 'var(--muted)' }}
+        >
+          {label}
+        </label>
+        {error && (
+          <span
+            className="font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.06em]"
+            style={{ color: '#ef4444' }}
+          >
+            {error}
+          </span>
+        )}
+      </div>
       {children}
     </div>
   )
