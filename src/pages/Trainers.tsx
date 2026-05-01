@@ -71,12 +71,12 @@ export default function Trainers() {
       </div>
 
       {/* ── Filter bar ── */}
-      <div className="max-w-[1100px] mx-auto px-12 pb-10 flex gap-2.5 flex-wrap max-[768px]:px-5 max-[768px]:pb-7">
+      <div className="max-w-[1100px] mx-auto px-12 pb-10 flex gap-2 flex-wrap max-[768px]:px-5 max-[768px]:pb-7">
         {availableFilters.map((opt) => (
           <button
             key={opt.value}
             onClick={() => setActiveFilter(opt.value)}
-            className="font-barlow-condensed font-semibold text-[14px] uppercase tracking-[0.05em] px-[18px] py-2 rounded-full cursor-pointer transition-all duration-200 border"
+            className="font-barlow-condensed font-semibold text-[13px] uppercase tracking-[0.05em] px-4 py-1.5 rounded-full cursor-pointer transition-all duration-200 border"
             style={{
               background: activeFilter === opt.value ? 'var(--blue)' : 'var(--surface)',
               borderColor: activeFilter === opt.value ? 'var(--blue)' : 'var(--border)',
@@ -111,7 +111,7 @@ export default function Trainers() {
             </span>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-6 max-[768px]:grid-cols-2 max-[560px]:grid-cols-1">
+          <div className="grid grid-cols-3 gap-6 max-[900px]:grid-cols-2 max-[480px]:grid-cols-1">
             {filtered.map((trainer) => (
               <TrainerCard key={trainer._id} trainer={trainer} />
             ))}

@@ -69,7 +69,7 @@ export default function Contact() {
     }
     setTrainerError(false)
 
-    fetch('https://spurstate.cloud/holtec-training/webhook/b0da62f5-a6bb-4abd-835f-653762ac9540', {
+    fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -175,7 +175,7 @@ export default function Contact() {
                 border: trainerError ? '1px solid #ef4444' : '1px solid var(--border)',
               }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-col gap-1 mb-3 sm:flex-row sm:items-center sm:justify-between">
                 <span
                   className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em]"
                   style={{ color: 'var(--muted)' }}

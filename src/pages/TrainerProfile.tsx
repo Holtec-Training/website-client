@@ -84,7 +84,7 @@ export default function TrainerProfile() {
   const bioBlocks: any[] = trainer.bio ?? []
 
   return (
-    <div className="max-w-[1100px] mx-auto px-12 pt-[60px] pb-[100px] max-[768px]:px-5 max-[768px]:pt-8 max-[768px]:pb-[60px]">
+    <div className="max-w-[1100px] mx-auto px-12 pt-[60px] pb-[100px] max-[768px]:px-5 max-[768px]:pt-6 max-[768px]:pb-[60px]">
       {/* Back link */}
       <Link
         to="/trainers"
@@ -99,7 +99,7 @@ export default function TrainerProfile() {
       <div className="flex gap-12 items-start max-[768px]:flex-col max-[768px]:gap-8">
 
         {/* Left: Photo */}
-        <div className="flex-shrink-0 w-[340px] max-[768px]:w-full">
+        <div className="flex-shrink-0 w-[340px] max-[768px]:w-full max-[480px]:w-[80%] max-[480px]:mx-auto">
           <div
             className="rounded-2xl overflow-hidden"
             style={{ aspectRatio: '3/4', width: '100%', border: '1px solid var(--border)' }}

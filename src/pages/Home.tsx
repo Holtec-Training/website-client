@@ -6,8 +6,7 @@ export default function Home() {
     <>
       {/* ── Hero ── */}
       <section
-        className="hero-glow relative flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden"
-        style={{ minHeight: 'calc(100vh - 72px)' }}
+        className="hero-glow relative flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden min-h-[calc(100vh-88px)] max-[768px]:min-h-0 max-[768px]:py-16 max-[768px]:pb-24 max-[480px]:py-12 max-[480px]:pb-20"
       >
         {/* Badge */}
         <span
@@ -85,10 +84,9 @@ export default function Home() {
         ].map((stat, i, arr) => (
           <div
             key={stat.label}
-            className="flex-1 max-w-[220px] text-center px-5 py-10 max-[560px]:border-b max-[560px]:border-r-0"
+            className="flex-1 min-w-[140px] max-w-[220px] text-center px-5 py-8 max-[560px]:py-6"
             style={{
-              borderRight:
-                i < arr.length - 1 ? '1px solid var(--border)' : 'none',
+              borderRight: i < arr.length - 1 ? '1px solid var(--border)' : 'none',
             }}
           >
             <span
