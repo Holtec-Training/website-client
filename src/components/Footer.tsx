@@ -34,13 +34,13 @@ export default function Footer() {
             <div className="flex items-center gap-2 text-[13px]">
               <Mail size={13} className="shrink-0" />
               <a
-                href="mailto:hello@holtec.co.nz"
+                href="mailto:milan@holtectraining.co.nz"
                 className="no-underline transition-colors"
                 style={{ color: FOOTER_TEXT }}
                 onMouseEnter={e => (e.currentTarget.style.color = FOOTER_LINK)}
                 onMouseLeave={e => (e.currentTarget.style.color = FOOTER_TEXT)}
               >
-                hello@holtec.co.nz
+                milan@holtectraining.co.nz
               </a>
             </div>
           </div>

@@ -1,181 +1,174 @@
 import { Link } from 'react-router-dom'
-import { User, CheckCircle, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+
+const HERO_IMG    = '/hero_image.jpg'
+const CLIENT_IMG  = '/client_card.jpg'
+const TRAINER_IMG = '/trainer_card.jpg'
 
 export default function Home() {
   return (
     <>
       {/* ── Hero ── */}
-      <section
-        className="hero-glow relative flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden min-h-[calc(100vh-88px)] max-[768px]:min-h-0 max-[768px]:py-16 max-[768px]:pb-24 max-[480px]:py-12 max-[480px]:pb-20"
-      >
-        {/* Badge */}
-        <span
-          className="inline-block font-barlow-condensed font-semibold text-[13px] uppercase tracking-[0.12em] rounded-full px-4 py-1.5 mb-7"
-          style={{
-            color: 'var(--blue)',
-            border: '1px solid rgba(21,101,216,0.25)',
-          }}
-        >
-          Personal Training Agency
-        </span>
-
-        {/* H1 */}
-        <h1
-          className="font-barlow-condensed font-black italic uppercase leading-none tracking-[-0.01em] mb-6"
-          style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
-        >
-          Find Your{' '}
-          <span style={{ color: 'var(--blue-light)' }}>Perfect</span>
-          <br />
-          Trainer.
-        </h1>
-
-        {/* Subtext */}
-        <p
-          className="text-[18px] font-light leading-[1.7] mb-11 max-w-[520px]"
-          style={{ color: 'var(--muted)' }}
-        >
-          Holtec connects ambitious clients with talented new personal trainers
-          — fresh energy, real results, and the right fit for you.
-        </p>
-
-        {/* CTA buttons */}
-        <div className="flex gap-4 flex-wrap justify-center">
-          <Link
-            to="/trainers"
-            className="font-barlow-condensed font-bold text-[17px] uppercase tracking-[0.05em] text-white no-underline inline-block px-8 py-3.5 rounded-[var(--radius)] transition-all duration-200 hover:-translate-y-px"
-            style={{ background: 'var(--blue)' }}
-            onMouseEnter={(e) => {
-              ;(e.currentTarget as HTMLElement).style.background = '#1a75f0'
-            }}
-            onMouseLeave={(e) => {
-              ;(e.currentTarget as HTMLElement).style.background = 'var(--blue)'
-            }}
-          >
-            Browse Trainers
-          </Link>
-          <Link
-            to="/contact"
-            className="font-barlow-condensed font-bold text-[17px] uppercase tracking-[0.05em] no-underline inline-block px-8 py-3.5 rounded-[var(--radius)] transition-all duration-200 hover:-translate-y-px"
-            style={{
-              color: 'var(--text)',
-              background: 'transparent',
-              border: '1px solid var(--border)',
-            }}
-          >
-            Connect
-          </Link>
+      <section className="home-hero">
+        <div className="home-hero__text">
+          <span className="home-eyebrow">Personal Training Agency</span>
+          <h1 className="home-hero__h1">
+            Find <span>Your</span> Perfect<br />Trainer.
+          </h1>
+          <p className="home-hero__sub">
+            Holtec connects ambitious clients with talented new personal trainers
+            — fresh energy, real results, and the right fit for you.
+          </p>
+          <div className="home-btns">
+            <Link to="/trainers" className="btn-primary">Browse Trainers</Link>
+            <Link to="/contact" className="btn-secondary">Connect</Link>
+          </div>
+        </div>
+        <div className="home-hero__img-col">
+          <div className="home-hero__img-wrap">
+            <img src={HERO_IMG} alt="Personal trainer" />
+          </div>
         </div>
       </section>
 
-      {/* ── Stats row ── */}
-      <div
-        className="flex justify-center flex-wrap"
-        style={{
-          borderTop: '1px solid var(--border)',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        {[
-          { number: '20+', label: 'Certified Trainers' },
-          { number: '100%', label: 'Qualified & Vetted' },
-          { number: 'Free', label: 'Initial Match' },
-          { number: 'All', label: 'Goals & Levels' },
-        ].map((stat, i, arr) => (
-          <div
-            key={stat.label}
-            className="flex-1 min-w-[140px] max-w-[220px] text-center px-5 py-8 max-[560px]:py-6"
-            style={{
-              borderRight: i < arr.length - 1 ? '1px solid var(--border)' : 'none',
-            }}
-          >
-            <span
-              className="font-barlow-condensed font-black italic text-[48px] leading-none block"
-              style={{ color: 'var(--blue-light)' }}
+      {/* ── Gap ── */}
+      <div className="section-gap" />
+
+      {/* ── About ── */}
+      <section className="home-about">
+        <div>
+          <span className="home-eyebrow">About Holtec</span>
+          <h2 className="home-section-h2">
+            Built for <span>real people,</span> real goals.
+          </h2>
+        </div>
+        <div>
+          <p className="home-body-text">
+            Holtec was built to solve a simple problem: finding a personal trainer
+            is harder than it should be. Too many options, not enough context, and
+            no easy way to know if someone is the right fit before you commit.
+          </p>
+          <p className="home-body-text" style={{ marginBottom: 0 }}>
+            We connect clients with newly qualified PTs who are hungry to prove
+            themselves — trainers with fresh knowledge, genuine enthusiasm, and a
+            real interest in helping you succeed.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Stats ── */}
+      <div className="home-stats-wrap">
+        <div className="home-stats-strip">
+          {[
+            { number: '10+',  label: 'Free Programs' },
+            { number: '100%', label: 'Qualified & Vetted' },
+            { number: 'Free', label: 'Initial Match' },
+            { number: 'All',  label: 'Goals & Levels' },
+          ].map((stat, i, arr) => (
+            <div
+              key={stat.label}
+              className="home-stat"
+              style={{ borderRight: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none' }}
             >
-              {stat.number}
-            </span>
-            <span
-              className="text-[13px] font-medium uppercase tracking-[0.08em] mt-1.5 block"
-              style={{ color: 'var(--muted)' }}
-            >
-              {stat.label}
-            </span>
-          </div>
-        ))}
+              <span className="home-stat__num">{stat.number}</span>
+              <span className="home-stat__lbl">{stat.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* ── Two-path section ── */}
-      <div className="grid grid-cols-2 gap-6 max-w-[1100px] mx-auto px-12 py-[100px] max-[768px]:grid-cols-1 max-[768px]:px-5 max-[768px]:py-[60px]">
-        <PathCard
+      {/* ── How It Works ── */}
+      <section className="home-hiw">
+        <div className="home-hiw__header">
+          <span className="home-eyebrow">The Process</span>
+          <h2 className="home-section-h2">
+            Three steps to <span>your</span> perfect match
+          </h2>
+        </div>
+        <div className="home-hiw__steps">
+          <div className="home-hiw__connector" />
+          {[
+            { n: '1', h: 'Browse', p: 'Explore profiles of qualified PTs. Filter by goal, location, or training style.' },
+            { n: '2', h: 'Match',  p: 'We connect you with the right trainer — no cost, no commitment required.' },
+            { n: '3', h: 'Train',  p: 'Book your first session and start working toward your goals straight away.' },
+          ].map((step) => (
+            <div key={step.n} className="home-hiw__step">
+              <div className="home-hiw__step-num">{step.n}</div>
+              <h3 className="home-hiw__step-h">{step.h}</h3>
+              <p className="home-hiw__step-p">{step.p}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Gap ── */}
+      <div className="section-gap" />
+
+      {/* ── Path cards ── */}
+      <div className="home-paths">
+        <ThumbCard
           to="/trainers"
-          icon={<User size={26} stroke="#5bc8f5" strokeWidth={2} />}
-          title="I'm Looking for a Trainer"
-          description="Browse our roster of passionate, newly qualified PTs. Every trainer is vetted by Holtec — energetic, committed, and ready to work with you."
+          img={CLIENT_IMG}
+          eyebrow="For Clients"
+          title={<>I'm Looking for a <span>Trainer</span></>}
+          description="Browse our roster of passionate, newly qualified PTs — vetted, energetic, and ready to help you reach your goals."
           linkLabel="View Trainers"
         />
-        <PathCard
+        <ThumbCard
           to="/contact"
-          icon={<CheckCircle size={26} stroke="#5bc8f5" strokeWidth={2} />}
-          title="I'm a Personal Trainer"
-          description="New to the industry and looking to build your client base? Holtec helps emerging PTs get in front of the right people — fast."
+          img={TRAINER_IMG}
+          eyebrow="For Trainers"
+          title={<>I'm a Personal <span>Trainer</span></>}
+          description="New to the industry? Holtec helps emerging PTs get in front of the right people — fast and free."
           linkLabel="Get in Touch"
         />
       </div>
+
+      {/* ── Gap ── */}
+      <div className="section-gap" />
+
+      {/* ── CTA ── */}
+      <section className="home-cta">
+        <h2 className="home-cta__h2">
+          Ready to get <span>started?</span>
+        </h2>
+        <p className="home-cta__sub">
+          Whether you're chasing a goal or building a career, Holtec is the
+          connection you've been looking for.
+        </p>
+        <div className="home-btns home-btns--center">
+          <Link to="/trainers" className="btn-primary">Browse Trainers</Link>
+          <Link to="/contact" className="btn-secondary">Connect with Us</Link>
+        </div>
+      </section>
     </>
   )
 }
 
-interface PathCardProps {
+interface ThumbCardProps {
   to: string
-  icon: React.ReactNode
-  title: string
+  img: string
+  eyebrow: string
+  title: React.ReactNode
   description: string
   linkLabel: string
 }
 
-function PathCard({ to, icon, title, description, linkLabel }: PathCardProps) {
+function ThumbCard({ to, img, eyebrow, title, description, linkLabel }: ThumbCardProps) {
   return (
-    <Link
-      to={to}
-      className="block no-underline rounded-2xl p-[48px_40px] transition-all duration-200 hover:-translate-y-1 group"
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        cursor: 'pointer',
-      }}
-      onMouseEnter={(e) => {
-        ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(91,200,245,0.3)'
-      }}
-      onMouseLeave={(e) => {
-        ;(e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'
-      }}
-    >
-      <div
-        className="w-[52px] h-[52px] rounded-xl flex items-center justify-center mb-6"
-        style={{ background: 'rgba(21,101,216,0.2)' }}
-      >
-        {icon}
+    <Link to={to} className="thumb-card">
+      <div className="thumb-card__img">
+        <img src={img} alt="" />
       </div>
-
-      <h3
-        className="font-barlow-condensed font-black italic uppercase text-[28px] mb-3"
-        style={{ color: 'var(--text)' }}
-      >
-        {title}
-      </h3>
-
-      <p className="text-[15px] leading-[1.65]" style={{ color: 'var(--muted)' }}>
-        {description}
-      </p>
-
-      <span
-        className="inline-flex items-center gap-1.5 mt-6 font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] hover:opacity-80 transition-opacity"
-        style={{ color: 'var(--blue-light)' }}
-      >
-        {linkLabel}
-        <ArrowRight size={14} strokeWidth={2.5} />
-      </span>
+      <div className="thumb-card__body">
+        <span className="home-eyebrow">{eyebrow}</span>
+        <h3 className="thumb-card__h3">{title}</h3>
+        <p className="thumb-card__p">{description}</p>
+        <span className="thumb-card__link">
+          {linkLabel}
+          <ArrowRight size={14} strokeWidth={2.5} />
+        </span>
+      </div>
     </Link>
   )
 }
