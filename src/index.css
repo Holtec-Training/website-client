@@ -148,7 +148,7 @@ body {
 }
 .home-btns { display: flex; gap: 12px; }
 .home-btns--center { justify-content: center; }
-.section-gap { height: 120px; background: var(--bg); }
+.section-gap { height: 100px; background: var(--bg); }
 
 /* ── Hero ── */
 .home-hero {
@@ -209,16 +209,20 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Stats ── */
-.home-stats-wrap { padding: 120px 52px; background: var(--bg); }
+.home-stats-wrap { padding: 100px 52px; background: var(--bg); }
 .home-stats-strip {
   display: flex;
   border: 1px solid rgba(0,0,0,0.07);
   border-radius: 14px;
   background: #fff;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
 }
 .home-stat { flex: 1; text-align: center; padding: 24px 12px; }
 .home-stat__num {
@@ -244,6 +248,9 @@ body {
   padding: 72px 52px;
   background: #fff;
   border-top: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  position: relative;
+  z-index: 1;
 }
 .home-hiw__header { text-align: center; margin-bottom: 56px; }
 .home-hiw__steps {
@@ -303,6 +310,7 @@ body {
   min-height: 180px;
   text-decoration: none;
   transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
 }
 .thumb-card:hover {
   transform: translateY(-2px);

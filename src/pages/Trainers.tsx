@@ -71,7 +71,7 @@ export default function Trainers() {
       </div>
 
       {/* ── Filter bar ── */}
-      <div className="max-w-[1100px] mx-auto px-12 pb-10 flex gap-2 flex-wrap max-[768px]:px-5 max-[768px]:pb-7">
+      <div className="max-w-[1100px] mx-auto px-12 pb-10 flex gap-2 flex-wrap max-[768px]:px-5 max-[768px]:pb-7 max-[768px]:flex-nowrap max-[768px]:overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
         {availableFilters.map((opt) => (
           <button
             key={opt.value}
@@ -136,6 +136,7 @@ function TrainerCard({ trainer }: TrainerCardProps) {
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
       }}
       onClick={() => navigate(`/trainers/${trainer.slug.current}`)}
       onMouseEnter={(e) => {
@@ -147,8 +148,8 @@ function TrainerCard({ trainer }: TrainerCardProps) {
     >
       {/* Photo area */}
       <div
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{ aspectRatio: '4/3', width: '100%' }}
+        className="relative overflow-hidden max-[768px]:aspect-[4/3]"
+        style={{ aspectRatio: '3/4', width: '100%' }}
       >
         {trainer.photo?.asset?.url ? (
           <img
@@ -174,32 +175,34 @@ function TrainerCard({ trainer }: TrainerCardProps) {
             background: 'rgba(9,9,12,0.75)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
-            border: '1px solid var(--border)',
+            border: '1px solid rgba(255,255,255,0.1)',
             color: 'var(--blue-light)',
           }}
         >
           {trainer.isNew ? 'New' : 'Verified'}
         </span>
+
+        {/* Name + location overlay */}
+        <div
+          className="absolute bottom-0 left-0 right-0"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%)', padding: '40px 16px 14px' }}
+        >
+          <h4
+            className="font-barlow-condensed font-black italic uppercase text-[28px] leading-none mb-1"
+            style={{ color: '#fff' }}
+          >
+            {trainer.name}
+          </h4>
+          <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            <MapPin size={12} strokeWidth={2} />
+            {trainer.location}
+          </div>
+        </div>
       </div>
 
-      {/* Info */}
-      <div className="p-6">
-        <h4
-          className="font-barlow-condensed font-black italic uppercase text-[22px] mb-1"
-          style={{ color: 'var(--text)' }}
-        >
-          {trainer.name}
-        </h4>
-
-        <div
-          className="flex items-center gap-1.5 text-[13px] mb-4"
-          style={{ color: 'var(--muted)' }}
-        >
-          <MapPin size={13} strokeWidth={2} />
-          {trainer.location}
-        </div>
-
-        <div className="flex flex-wrap gap-1.5 mb-5">
+      {/* Tags + CTA */}
+      <div className="p-4">
+        <div className="flex flex-wrap gap-1.5 mb-4">
           {(trainer.specialties ?? []).map((tag) => (
             <span
               key={tag}
@@ -233,7 +236,7 @@ function TrainerCard({ trainer }: TrainerCardProps) {
             el.style.color = 'var(--blue-light)'
           }}
         >
-          Connect with {firstName}
+          View {firstName}'s Profile
         </div>
       </div>
     </article>

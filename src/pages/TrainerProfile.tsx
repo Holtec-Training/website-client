@@ -82,28 +82,31 @@ export default function TrainerProfile() {
   }
 
   const bioBlocks: any[] = trainer.bio ?? []
+  const [firstName, ...rest] = trainer.name.split(' ')
+  const lastName = rest.join(' ')
 
   return (
     <div className="max-w-[1100px] mx-auto px-12 pt-[60px] pb-[100px] max-[768px]:px-5 max-[768px]:pt-6 max-[768px]:pb-[60px]">
       {/* Back link */}
       <Link
         to="/trainers"
-        className="inline-flex items-center gap-2 font-barlow-condensed font-semibold text-[14px] uppercase tracking-[0.05em] mb-10 transition-opacity duration-200 hover:opacity-70"
+        className="inline-flex items-center gap-2 font-barlow-condensed font-semibold text-[14px] uppercase tracking-[0.05em] mb-8 transition-opacity duration-200 hover:opacity-70"
         style={{ color: 'var(--muted)', textDecoration: 'none' }}
       >
         <ArrowLeft size={15} strokeWidth={2} />
         Back to Trainers
       </Link>
 
-      {/* Two-column layout */}
-      <div className="flex gap-12 items-start max-[768px]:flex-col max-[768px]:gap-8">
+      {/* Card */}
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.10)' }}
+      >
+        {/* Two-column layout */}
+        <div className="flex items-stretch gap-10 max-[768px]:flex-col max-[768px]:gap-0">
 
-        {/* Left: Photo */}
-        <div className="flex-shrink-0 w-[340px] max-[768px]:w-full max-[480px]:w-[80%] max-[480px]:mx-auto">
-          <div
-            className="rounded-2xl overflow-hidden"
-            style={{ aspectRatio: '3/4', width: '100%', border: '1px solid var(--border)' }}
-          >
+          {/* Left: Photo */}
+          <div className="flex-shrink-0 w-[420px] max-[768px]:w-full max-[768px]:aspect-[4/3] overflow-hidden" style={{ aspectRatio: '3/4' }}>
             {trainer.photo?.asset?.url ? (
               <img
                 src={trainer.photo.asset.url}
@@ -121,134 +124,134 @@ export default function TrainerProfile() {
               </div>
             )}
           </div>
-        </div>
 
-        {/* Right: Info */}
-        <div className="flex-1 min-w-0">
-          {/* Badge */}
-          <span
-            className="inline-block font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-4"
-            style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              color: 'var(--blue-light)',
-            }}
-          >
-            {trainer.isNew ? 'New' : 'Verified'}
-          </span>
+          {/* Right: Info */}
+          <div className="flex-1 min-w-0 p-10 max-[768px]:p-6">
+            {/* Badge */}
+            <span
+              className="inline-block font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-4"
+              style={{
+                background: 'var(--surface2)',
+                border: '1px solid var(--border)',
+                color: 'var(--blue-light)',
+              }}
+            >
+              {trainer.isNew ? 'New' : 'Verified'}
+            </span>
 
-          {/* Name */}
-          <h1
-            className="font-barlow-condensed font-black italic uppercase leading-none mb-3"
-            style={{ fontSize: 'clamp(36px, 5vw, 56px)', color: 'var(--text)' }}
-          >
-            {trainer.name}
-          </h1>
+            {/* Name */}
+            <h1
+              className="font-barlow-condensed font-black italic uppercase leading-none mb-3"
+              style={{ fontSize: 'clamp(36px, 5vw, 56px)', color: 'var(--text)' }}
+            >
+              {firstName}{lastName && <> <span style={{ color: 'var(--blue)' }}>{lastName}</span></>}
+            </h1>
 
-          {/* Location */}
-          <div
-            className="flex items-center gap-1.5 text-[14px] mb-2"
-            style={{ color: 'var(--muted)' }}
-          >
-            <MapPin size={14} strokeWidth={2} />
-            {trainer.location}
-          </div>
-
-          {/* Spec */}
-          {trainer.spec && (
-            <p
-              className="text-[15px] mb-5"
+            {/* Location */}
+            <div
+              className="flex items-center gap-1.5 text-[14px] mb-2"
               style={{ color: 'var(--muted)' }}
             >
-              {trainer.spec}
-            </p>
-          )}
-
-          {/* Specialties tags */}
-          {trainer.specialties && trainer.specialties.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-7">
-              {trainer.specialties.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.05em] px-2.5 py-0.5 rounded-md"
-                  style={{
-                    color: 'var(--muted)',
-                    background: 'var(--surface2)',
-                    border: '1px solid var(--border)',
-                  }}
-                >
-                  {TAG_LABELS[tag] ?? tag}
-                </span>
-              ))}
+              <MapPin size={14} strokeWidth={2} />
+              {trainer.location}
             </div>
-          )}
 
-          {/* Bio */}
-          {bioBlocks.length > 0 && (
-            <div className="mb-7">
-              {bioBlocks.map((block: any, i: number) => {
-                if (block._type !== 'block') return null
-                const text = (block.children ?? [])
-                  .map((child: any) => child.text ?? '')
-                  .join('')
-                return (
-                  <p
-                    key={i}
-                    className="text-[15px] leading-relaxed mb-3 last:mb-0"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    {text}
-                  </p>
-                )
-              })}
-            </div>
-          )}
-
-          {/* Certifications */}
-          {trainer.certifications && trainer.certifications.length > 0 && (
-            <div className="mb-8">
-              <h3
-                className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em] mb-3"
+            {/* Spec */}
+            {trainer.spec && (
+              <p
+                className="text-[15px] mb-5"
                 style={{ color: 'var(--muted)' }}
               >
-                Certifications
-              </h3>
-              <ul className="flex flex-col gap-2">
-                {trainer.certifications.map((cert, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center gap-2 text-[14px]"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    <Award size={14} strokeWidth={2} style={{ color: 'var(--blue-light)', flexShrink: 0 }} />
-                    {cert}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                {trainer.spec}
+              </p>
+            )}
 
-          {/* Booking button */}
-          <Link
-            to={`/contact?trainer=${trainer.slug.current}`}
-            className="inline-block font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] px-8 py-3 rounded-lg transition-all duration-200"
-            style={{
-              background: 'var(--blue)',
-              color: '#fff',
-              textDecoration: 'none',
-              border: '1px solid var(--blue)',
-            }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement
-              el.style.opacity = '0.85'
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement
-              el.style.opacity = '1'
-            }}
-          >
-            Book a Session
-          </Link>
+            {/* Specialties tags */}
+            {trainer.specialties && trainer.specialties.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-7">
+                {trainer.specialties.map((tag) => (
+                  <span
+                    key={tag}
+                    className="font-barlow-condensed font-semibold text-[12px] uppercase tracking-[0.05em] px-2.5 py-0.5 rounded-md"
+                    style={{
+                      color: 'var(--muted)',
+                      background: 'var(--surface2)',
+                      border: '1px solid var(--border)',
+                    }}
+                  >
+                    {TAG_LABELS[tag] ?? tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Bio */}
+            {bioBlocks.length > 0 && (
+              <div className="mb-7">
+                {bioBlocks.map((block: any, i: number) => {
+                  if (block._type !== 'block') return null
+                  const text = (block.children ?? [])
+                    .map((child: any) => child.text ?? '')
+                    .join('')
+                  return (
+                    <p
+                      key={i}
+                      className="text-[15px] leading-relaxed mb-3 last:mb-0"
+                      style={{ color: 'var(--text)' }}
+                    >
+                      {text}
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Certifications */}
+            {trainer.certifications && trainer.certifications.length > 0 && (
+              <div className="mb-8">
+                <h3
+                  className="font-barlow-condensed font-bold text-[13px] uppercase tracking-[0.08em] mb-3"
+                  style={{ color: 'var(--muted)' }}
+                >
+                  Certifications
+                </h3>
+                <ul className="flex flex-col gap-2">
+                  {trainer.certifications.map((cert, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center gap-2 text-[14px]"
+                      style={{ color: 'var(--text)' }}
+                    >
+                      <Award size={14} strokeWidth={2} style={{ color: 'var(--blue-light)', flexShrink: 0 }} />
+                      {cert}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Booking button */}
+            <Link
+              to={`/contact?trainer=${trainer.slug.current}`}
+              className="inline-block font-barlow-condensed font-bold text-[15px] uppercase tracking-[0.06em] px-8 py-3 rounded-lg transition-all duration-200 text-center max-[768px]:block max-[768px]:w-full"
+              style={{
+                background: 'var(--blue)',
+                color: '#fff',
+                textDecoration: 'none',
+                border: '1px solid var(--blue)',
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement
+                el.style.opacity = '0.85'
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement
+                el.style.opacity = '1'
+              }}
+            >
+              Book a Session
+            </Link>
+          </div>
         </div>
       </div>
     </div>
