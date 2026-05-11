@@ -201,9 +201,8 @@ body {
 
 /* ── About ── */
 .home-about {
-  padding: 80px 52px;
+  padding: 60px 52px 80px;
   background: #fff;
-  border-top: 1px solid rgba(0,0,0,0.07);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
@@ -214,14 +213,14 @@ body {
 }
 
 /* ── Stats ── */
-.home-stats-wrap { padding: 100px 52px; background: var(--bg); }
+.home-stats-wrap { padding: 0; background: transparent; }
 .home-stats-strip {
   display: flex;
-  border: 1px solid rgba(0,0,0,0.07);
-  border-radius: 14px;
   background: #fff;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.10);
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
 }
 .home-stat { flex: 1; text-align: center; padding: 24px 12px; }
 .home-stat__num {
@@ -244,12 +243,11 @@ body {
 
 /* ── How It Works ── */
 .home-hiw {
-  padding: 72px 52px;
+  padding: 72px 52px 60px;
   background: #fff;
   border-top: 1px solid rgba(0,0,0,0.07);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 .home-hiw__header { text-align: center; margin-bottom: 56px; }
 .home-hiw__steps {
@@ -416,9 +414,9 @@ body {
   .home-about {
     grid-template-columns: 1fr;
     gap: 24px;
-    padding: 48px 20px;
+    padding: 40px 20px 48px;
   }
-  .home-stats-wrap { padding: 60px 20px; }
+  .home-stats-wrap { padding: 0; }
   .home-stats-strip {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -427,7 +425,7 @@ body {
   .home-stat:nth-child(2) { border-right: none !important; }
   .home-stat:nth-child(3) { border-bottom: none; }
   .home-stat:nth-child(4) { border-right: none !important; border-bottom: none; }
-  .home-hiw { padding: 48px 20px; }
+  .home-hiw { padding: 48px 20px 40px; }
   .home-hiw__header { margin-bottom: 32px; }
   .home-hiw__steps { grid-template-columns: 1fr; gap: 24px; }
   .home-hiw__connector { display: none; }
@@ -457,7 +455,20 @@ body {
     grid-template-columns: 1fr;
     padding: 0 20px;
   }
-  .thumb-card { grid-template-columns: 140px 1fr; }
+  .thumb-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .thumb-card__body {
+    order: 1;
+    border-left: none;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .thumb-card__img {
+    order: 2;
+    height: 340px;
+  }
+  .thumb-card__img img { object-position: center 20%; }
   .section-gap { height: 60px; }
   .home-cta { padding: 48px 20px 100px; }
   .home-btns { flex-direction: column; align-items: flex-start; }

@@ -34,28 +34,6 @@ export default function Home() {
       {/* ── Gap ── */}
       <div className="section-gap" />
 
-      {/* ── About ── */}
-      <section className="home-about">
-        <div>
-          <span className="home-eyebrow">About Holtec</span>
-          <h2 className="home-section-h2">
-            Built for <span>real people,</span> real goals.
-          </h2>
-        </div>
-        <div>
-          <p className="home-body-text">
-            Holtec was built to solve a simple problem: finding a personal trainer
-            is harder than it should be. Too many options, not enough context, and
-            no easy way to know if someone is the right fit before you commit.
-          </p>
-          <p className="home-body-text" style={{ marginBottom: 0 }}>
-            We connect clients with newly qualified PTs who are hungry to prove
-            themselves — trainers with fresh knowledge, genuine enthusiasm, and a
-            real interest in helping you succeed.
-          </p>
-        </div>
-      </section>
-
       {/* ── Stats ── */}
       <div className="home-stats-wrap">
         <div className="home-stats-strip">
@@ -101,6 +79,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── About ── */}
+      <section className="home-about">
+        <div>
+          <span className="home-eyebrow">About Holtec</span>
+          <h2 className="home-section-h2">
+            Built for <span>real people,</span> real goals.
+          </h2>
+        </div>
+        <div>
+          <p className="home-body-text">
+            Holtec was built to solve a simple problem: finding a personal trainer
+            is harder than it should be. Too many options, not enough context, and
+            no easy way to know if someone is the right fit before you commit.
+          </p>
+          <p className="home-body-text" style={{ marginBottom: 0 }}>
+            We connect clients with newly qualified PTs who are hungry to prove
+            themselves — trainers with fresh knowledge, genuine enthusiasm, and a
+            real interest in helping you succeed.
+          </p>
+        </div>
+      </section>
+
       {/* ── Gap ── */}
       <div className="section-gap" />
 
@@ -126,21 +126,6 @@ export default function Home() {
 
       {/* ── Gap ── */}
       <div className="section-gap" />
-
-      {/* ── CTA ── */}
-      <section className="home-cta">
-        <h2 className="home-cta__h2">
-          Ready to get <span>started?</span>
-        </h2>
-        <p className="home-cta__sub">
-          Whether you're chasing a goal or building a career, Holtec is the
-          connection you've been looking for.
-        </p>
-        <div className="home-btns home-btns--center">
-          <Link to="/trainers" className="btn-primary">Browse Trainers</Link>
-          <Link to="/contact" className="btn-secondary">Connect with Us</Link>
-        </div>
-      </section>
     </>
   )
 }
