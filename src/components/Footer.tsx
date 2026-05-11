@@ -10,7 +10,7 @@ const FOOTER_BORDER = 'rgba(255,255,255,0.08)'
 export default function Footer() {
   return (
     <footer style={{ background: FOOTER_BG, color: FOOTER_TEXT }}>
-      <div className="max-w-[1100px] mx-auto px-12 py-14 max-[768px]:px-5">
+      <div className="px-12 py-14 max-[768px]:px-5">
 
         {/* ── Three columns ── */}
         <div className="grid grid-cols-3 gap-10 max-[768px]:grid-cols-1">
