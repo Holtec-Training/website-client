@@ -5,8 +5,8 @@ export const handler: Handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  const webhookUrl = process.env.N8N_WEBHOOK_URL
-  const webhookSecret = process.env.N8N_WEBHOOK_SECRET
+  const webhookUrl = process.env.N8N_CONTACT_URL
+  const webhookSecret = process.env.N8N_CONTACT_SECRET
 
   if (!webhookUrl) {
     return { statusCode: 500, body: 'Webhook not configured' }
