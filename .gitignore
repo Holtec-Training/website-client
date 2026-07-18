@@ -23,3 +23,5 @@ studio-holtec-training/dist/
 
 *.md
 Holtec-site-index-light.html
+# Local Netlify folder
+.netlify

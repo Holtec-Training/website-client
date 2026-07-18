@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { useNavigate } from 'react-router-dom'
 import { MapPin, User } from 'lucide-react'
 import { sanityClient } from '../lib/sanity'
@@ -91,13 +92,8 @@ export default function Trainers() {
       {/* ── Trainer grid ── */}
       <div className="max-w-[1100px] mx-auto px-12 pb-[100px] max-[768px]:px-5 max-[768px]:pb-[60px]">
         {loading ? (
-          <div
-            className="flex items-center justify-center py-24"
-            style={{ color: 'var(--muted)' }}
-          >
-            <span className="font-barlow-condensed font-semibold text-[16px] uppercase tracking-[0.05em] opacity-60">
-              Loading trainers...
-            </span>
+          <div className="py-24">
+            <LoadingSpinner label="Loading trainers…" size="lg" />
           </div>
         ) : filtered.length === 0 ? (
           <div

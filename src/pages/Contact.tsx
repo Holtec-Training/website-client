@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import { sanityClient } from '../lib/sanity'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 interface LocationState {
   trainer?: string
@@ -37,6 +38,7 @@ export default function Contact() {
   const [phone, setPhone] = useState('')
   const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(false)
   const [trainerError, setTrainerError] = useState(false)
   const [touched, setTouched] = useState({ firstName: false, lastName: false, email: false })
@@ -85,6 +87,7 @@ export default function Contact() {
       return
     }
     setTrainerError(false)
+    setIsSubmitting(true)
 
     fetch('/.netlify/functions/contact', {
       method: 'POST',
@@ -103,6 +106,7 @@ export default function Contact() {
     })
       .then(() => setSubmitted(true))
       .catch(() => setError(true))
+      .finally(() => setIsSubmitting(false))
   }
 
   return (
@@ -290,25 +294,31 @@ export default function Contact() {
           <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }} />
 
           {/* Submit */}
-          <button
-            type="submit"
-            disabled={!isFormValid}
-            className="w-full font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.05em] text-white py-4 rounded-[var(--radius)] transition-all duration-200"
-            style={{
-              background: isFormValid ? 'var(--blue)' : 'var(--surface)',
-              border: isFormValid ? 'none' : '1px solid var(--border)',
-              color: isFormValid ? '#fff' : 'var(--muted)',
-              cursor: isFormValid ? 'pointer' : 'not-allowed',
-            }}
-            onMouseEnter={(e) => {
-              if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = '#1a75f0'
-            }}
-            onMouseLeave={(e) => {
-              if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = 'var(--blue)'
-            }}
-          >
-            Send Message
-          </button>
+          {isSubmitting ? (
+            <div className="py-2">
+              <LoadingSpinner label="Sending your message…" size="md" />
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={!isFormValid}
+              className="w-full font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.05em] text-white py-4 rounded-[var(--radius)] transition-all duration-200"
+              style={{
+                background: isFormValid ? 'var(--blue)' : 'var(--surface)',
+                border: isFormValid ? 'none' : '1px solid var(--border)',
+                color: isFormValid ? '#fff' : 'var(--muted)',
+                cursor: isFormValid ? 'pointer' : 'not-allowed',
+              }}
+              onMouseEnter={(e) => {
+                if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = '#1a75f0'
+              }}
+              onMouseLeave={(e) => {
+                if (isFormValid) (e.currentTarget as HTMLButtonElement).style.background = 'var(--blue)'
+              }}
+            >
+              Send Message
+            </button>
+          )}
         </form>
       )}
 

@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, defineArrayMember } from 'sanity'
 
 export default defineType({
   name: 'siteConfig',
@@ -19,12 +19,31 @@ export default defineType({
       initialValue: 'Get Your Program',
     }),
     defineField({
-      name: 'maxRecommendations',
-      title: 'Max recommendations',
-      type: 'number',
-      initialValue: 3,
-      validation: (Rule) => Rule.min(1).max(5).integer(),
-      description: 'How many free programs to show on the results screen (top-N by score).',
+      name: 'defaultPromotionCode',
+      title: 'Default Stripe promotion code',
+      type: 'string',
+      initialValue: 'HOLTEC',
+      description: 'Fallback promotion code used when a customer\'s ?src= value is not listed in Coupon mappings below. Must exist as an active Promotion Code in Stripe backed by the `one_program_free` coupon.',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'couponMappings',
+      title: 'Coupon mappings',
+      type: 'array',
+      description: 'Maps ?src= attribution values to customer-visible Stripe promotion codes. Each promotion code must already exist in Stripe, backed by the shared `one_program_free` coupon. Adding a new gym or event = create the Stripe promotion code, then add a mapping row here.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({ name: 'src', title: 'src value', type: 'string', description: 'Exact match, e.g. "poster-ellerslie" or "nav"' }),
+            defineField({ name: 'promotionCode', title: 'Stripe promotion code', type: 'string', description: 'e.g. "ELLERSLIE" — shown to the customer on their Stripe receipt' }),
+          ],
+          preview: {
+            select: { src: 'src', code: 'promotionCode' },
+            prepare({ src, code }) { return { title: `${src} → ${code}` } },
+          },
+        }),
+      ],
     }),
     defineField({
       name: 'landingHeadline',
@@ -39,10 +58,10 @@ export default defineType({
     }),
     defineField({
       name: 'holdingEmailBody',
-      title: 'Holding email body',
+      title: 'Welcome email body',
       type: 'array',
       of: [{ type: 'block' }],
-      description: 'Paid-path holding email — "Milan will set you up within 24h" copy.',
+      description: 'Path B welcome email — "Milan will be in touch" copy sent alongside the Stripe Customer Portal link.',
     }),
   ],
   preview: {

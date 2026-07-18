@@ -19,6 +19,13 @@ describe('sanity fetch helpers', () => {
     expect(result).toHaveLength(1)
   })
 
+  it('getPrograms does NOT fetch priceCents (removed in pass 6)', async () => {
+    fetchMock.mockResolvedValue([])
+    await getPrograms()
+    const groq = fetchMock.mock.calls[0][0] as string
+    expect(groq).not.toMatch(/priceCents/)
+  })
+
   it('getQuestions fetches only active questions ordered by order asc', async () => {
     fetchMock.mockResolvedValue([{ _id: 'q1', order: 1 }])
     await getQuestions()
@@ -28,10 +35,20 @@ describe('sanity fetch helpers', () => {
     expect(groq).toMatch(/order\(order asc\)/)
   })
 
-  it('getSiteConfig fetches the singleton by id', async () => {
-    fetchMock.mockResolvedValue({ programPortalEnabled: true })
+  it('getSiteConfig fetches the singleton and includes couponMappings + defaultPromotionCode', async () => {
+    fetchMock.mockResolvedValue({ programPortalEnabled: true, defaultPromotionCode: 'HOLTEC', couponMappings: [] })
     const result = await getSiteConfig()
-    expect(fetchMock.mock.calls[0][0]).toMatch(/_id == "siteConfig"/)
-    expect(result?.programPortalEnabled).toBe(true)
+    const groq = fetchMock.mock.calls[0][0] as string
+    expect(groq).toMatch(/_id == "siteConfig"/)
+    expect(groq).toMatch(/defaultPromotionCode/)
+    expect(groq).toMatch(/couponMappings/)
+    expect(result?.defaultPromotionCode).toBe('HOLTEC')
+  })
+
+  it('getSiteConfig does NOT fetch maxRecommendations (removed in pass 6)', async () => {
+    fetchMock.mockResolvedValue({})
+    await getSiteConfig()
+    const groq = fetchMock.mock.calls[0][0] as string
+    expect(groq).not.toMatch(/maxRecommendations/)
   })
 })

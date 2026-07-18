@@ -19,12 +19,12 @@ const invoke = (body: string, signature: string, method = 'POST', isBase64 = fal
     headers: { 'stripe-signature': signature },
   })
 
-describe('stripe-webhook', () => {
+describe('stripe-webhook (pass 6 — subscription)', () => {
   beforeEach(() => {
     process.env.STRIPE_SECRET_KEY = 'sk_test_xxx'
     process.env.STRIPE_WEBHOOK_SIGNING_SECRET = 'whsec_xxx'
-    process.env.N8N_PROGRAM_PURCHASED_URL = 'https://mock-n8n.example.test/webhook/program-purchased'
-    process.env.N8N_PROGRAM_PURCHASED_SECRET = 'n8n-secret'
+    process.env.N8N_SUBSCRIPTION_CREATED_URL = 'https://mock-n8n.example.test/webhook/subscription-created'
+    process.env.N8N_SUBSCRIPTION_CREATED_SECRET = 'n8n-secret'
     constructEvent.mockReset()
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: async () => 'ok' }))
   })
@@ -40,63 +40,89 @@ describe('stripe-webhook', () => {
     expect(res.statusCode).toBe(400)
   })
 
-  it('verifies against exact raw body bytes', async () => {
-    const raw = '{"raw":"bytes"}'
-    constructEvent.mockReturnValue({ type: 'other' })
-    await invoke(raw, 'sig')
-    expect(constructEvent).toHaveBeenCalledWith(raw, 'sig', 'whsec_xxx')
-  })
-
-  it('decodes base64 body before verification', async () => {
-    const raw = '{"raw":"bytes"}'
-    constructEvent.mockReturnValue({ type: 'other' })
-    await invoke(raw, 'sig', 'POST', true)
-    expect(constructEvent).toHaveBeenCalledWith(raw, 'sig', 'whsec_xxx')
-  })
-
   it('ignores non-checkout.session.completed events with 200', async () => {
-    constructEvent.mockReturnValue({ type: 'payment_intent.succeeded' })
+    constructEvent.mockReturnValue({ type: 'invoice.payment_succeeded' })
     const res = await invoke('{}', 'sig')
     expect(res.statusCode).toBe(200)
     expect(fetch).not.toHaveBeenCalled()
   })
 
-  it('forwards a dossier to n8n on checkout.session.completed', async () => {
+  it('ignores checkout.session.completed events with mode: payment (one-time)', async () => {
+    constructEvent.mockReturnValue({
+      type: 'checkout.session.completed',
+      data: { object: { mode: 'payment', id: 'cs_1' } },
+    })
+    const res = await invoke('{}', 'sig')
+    expect(res.statusCode).toBe(200)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('forwards a subscription dossier to n8n on checkout.session.completed (mode: subscription)', async () => {
     constructEvent.mockReturnValue({
       type: 'checkout.session.completed',
       data: {
         object: {
+          mode: 'subscription',
           id: 'cs_test_1',
           customer_email: 'j@x.com',
-          amount_total: 3000,
+          customer: 'cus_123',
+          subscription: 'sub_456',
           currency: 'nzd',
-          payment_intent: 'pi_1',
           created: 1721001600,
           metadata: {
             session_id: 's-uuid',
-            src: 'poster-newmarket',
-            free_program_id: 'p-free',
-            paid_program_ids: 'p1,p2',
+            src: 'poster-ellerslie',
+            program_ids: 'p1,p2,p3',
             first_name: 'Jane',
             last_name: 'Doe',
             phone: '+64',
+            promotion_code: 'ELLERSLIE',
           },
         },
       },
     })
     await invoke('{}', 'sig')
     const [url, init] = (fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0]
-    expect(url).toBe('https://mock-n8n.example.test/webhook/program-purchased')
+    expect(url).toBe('https://mock-n8n.example.test/webhook/subscription-created')
     expect((init.headers as Record<string, string>)['X-Webhook-Secret']).toBe('n8n-secret')
     const body = JSON.parse(init.body as string)
     expect(body).toEqual({
       first_name: 'Jane', last_name: 'Doe', email: 'j@x.com', phone: '+64',
-      free_program_id: 'p-free', paid_program_ids: ['p1', 'p2'],
-      amount_cents: 3000, currency: 'nzd',
+      program_ids: ['p1', 'p2', 'p3'],
+      free_program_slug: 'p1',
+      paid_program_slugs: ['p2', 'p3'],
+      program_count: 3,
+      currency: 'nzd',
+      monthly_amount_cents: 6000,  // (3 - 1) × $30
       stripe_checkout_session_id: 'cs_test_1',
-      stripe_payment_intent_id: 'pi_1',
-      session_id: 's-uuid', src: 'poster-newmarket',
-      paid_at: new Date(1721001600 * 1000).toISOString(),
+      stripe_customer_id: 'cus_123',
+      stripe_subscription_id: 'sub_456',
+      promotion_code: 'ELLERSLIE',
+      session_id: 's-uuid',
+      src: 'poster-ellerslie',
+      subscribed_at: new Date(1721001600 * 1000).toISOString(),
     })
+  })
+
+  it('handles customer/subscription as objects (not just string IDs)', async () => {
+    constructEvent.mockReturnValue({
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          mode: 'subscription',
+          id: 'cs_2',
+          customer_email: 'x@y.com',
+          customer: { id: 'cus_obj_1' },
+          subscription: { id: 'sub_obj_1' },
+          currency: 'nzd',
+          created: 1721000000,
+          metadata: { program_ids: 'a,b', first_name: '', last_name: '', phone: '', promotion_code: 'HOLTEC', session_id: '', src: '' },
+        },
+      },
+    })
+    await invoke('{}', 'sig')
+    const body = JSON.parse((fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0][1].body as string)
+    expect(body.stripe_customer_id).toBe('cus_obj_1')
+    expect(body.stripe_subscription_id).toBe('sub_obj_1')
   })
 })

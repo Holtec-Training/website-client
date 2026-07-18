@@ -13,16 +13,22 @@ function scoreProgram(program: Program, selected: AttributeTag[]): number {
   return score
 }
 
+/**
+ * Pass 6 semantics: return ALL active programs with score > 0, sorted by
+ * score desc, ties broken by title alphabetical. NO cap, NO padding with
+ * zero-score programs. Returns [] if no program matches.
+ */
 export function scoreRecommendations(
   programs: Program[],
   selected: AttributeTag[],
-  n: number,
 ): Program[] {
   const active = programs.filter(p => p.active)
-  const scored = active.map(p => ({ p, score: scoreProgram(p, selected) }))
+  const scored = active
+    .map(p => ({ p, score: scoreProgram(p, selected) }))
+    .filter(({ score }) => score > 0)
   scored.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     return a.p.title.localeCompare(b.p.title)
   })
-  return scored.slice(0, Math.min(n, active.length)).map(({ p }) => p)
+  return scored.map(({ p }) => p)
 }

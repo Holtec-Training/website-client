@@ -15,9 +15,12 @@
     "@portabletext/react": "^6.0.3",
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
+    "@stripe/react-stripe-js": "^6.8.0",
+    "@stripe/stripe-js": "^9.10.0",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-helmet-async": "^3.0.0",
     "react-router-dom": "^6.28.0",
     "stripe": "^22.3.2"
   },

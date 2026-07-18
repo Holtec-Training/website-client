@@ -9,7 +9,6 @@ export interface Program {
   title: string
   slug: { current: string }
   summary?: string
-  priceCents?: number
   stripePriceId?: string
   scoringAttributes: ScoringAttribute[]
   active: boolean

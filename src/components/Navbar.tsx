@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
+import { getSiteConfig } from '../lib/programs'
+import type { SiteConfig } from '../types/siteConfig'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null)
+
+  useEffect(() => {
+    getSiteConfig().then(setSiteConfig)
+  }, [])
 
   // Close menu on route change / scroll
   useEffect(() => {
@@ -23,6 +30,9 @@ export default function Navbar() {
       'font-barlow-condensed font-semibold text-[20px] uppercase tracking-[0.06em] no-underline transition-colors duration-200 py-3 border-b block',
       isActive ? 'text-[var(--text)]' : 'text-[var(--muted)]',
     ].join(' ')
+
+  const showPrograms = !!siteConfig?.programPortalEnabled
+  const programsLabel = siteConfig?.programPortalCtaLabel || 'Get Your Program'
 
   return (
     <>
@@ -49,17 +59,20 @@ export default function Navbar() {
         <ul className="flex items-center gap-9 list-none m-0 p-0 max-[768px]:hidden">
           <li><NavLink to="/" end className={linkClass}>Home</NavLink></li>
           <li><NavLink to="/trainers" className={linkClass}>Our Trainers</NavLink></li>
-          <li>
-            <NavLink
-              to="/contact"
-              className="font-barlow-condensed font-semibold text-[15px] uppercase tracking-[0.06em] no-underline text-white px-[22px] py-2 rounded-[var(--radius)] transition-colors duration-200"
-              style={{ background: 'var(--blue)' }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#1a75f0' }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--blue)' }}
-            >
-              Connect
-            </NavLink>
-          </li>
+          <li><NavLink to="/contact" className={linkClass}>Connect</NavLink></li>
+          {showPrograms && (
+            <li>
+              <NavLink
+                to="/programs?src=nav"
+                className="font-barlow-condensed font-semibold text-[15px] uppercase tracking-[0.06em] no-underline text-white px-[22px] py-2 rounded-[var(--radius)] transition-colors duration-200"
+                style={{ background: 'var(--blue)' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#1a75f0' }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--blue)' }}
+              >
+                {programsLabel}
+              </NavLink>
+            </li>
+          )}
         </ul>
 
         {/* Mobile hamburger */}
@@ -87,16 +100,21 @@ export default function Navbar() {
             <NavLink to="/trainers" className={mobileLinkClass} style={{ borderColor: 'var(--border)' }} onClick={() => setMenuOpen(false)}>
               Our Trainers
             </NavLink>
-            <div className="pt-6">
-              <NavLink
-                to="/contact"
-                className="font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.06em] no-underline text-white px-6 py-3.5 rounded-[var(--radius)] block text-center"
-                style={{ background: 'var(--blue)' }}
-                onClick={() => setMenuOpen(false)}
-              >
-                Connect
-              </NavLink>
-            </div>
+            <NavLink to="/contact" className={mobileLinkClass} style={{ borderColor: 'var(--border)' }} onClick={() => setMenuOpen(false)}>
+              Connect
+            </NavLink>
+            {showPrograms && (
+              <div className="pt-6">
+                <NavLink
+                  to="/programs?src=nav"
+                  className="font-barlow-condensed font-bold text-[18px] uppercase tracking-[0.06em] no-underline text-white px-6 py-3.5 rounded-[var(--radius)] block text-center"
+                  style={{ background: 'var(--blue)' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {programsLabel}
+                </NavLink>
+              </div>
+            )}
           </div>
         </div>
       )}

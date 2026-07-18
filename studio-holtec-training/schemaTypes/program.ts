@@ -40,17 +40,10 @@ export default defineType({
       description: 'The branded PDF emailed to free-path customers.',
     }),
     defineField({
-      name: 'priceCents',
-      title: 'Price (cents, NZD)',
-      type: 'number',
-      description: 'Display price only — Stripe is the source of truth via stripePriceId.',
-      validation: (Rule) => Rule.min(0),
-    }),
-    defineField({
       name: 'stripePriceId',
-      title: 'Stripe Price ID',
+      title: 'Stripe Price ID (recurring $30/mo NZD)',
       type: 'string',
-      description: 'e.g. price_1AbC2xY3Z4… — copy from Milan\'s Stripe dashboard.',
+      description: 'e.g. price_1AbC2xY3Z4… — from Milan\'s Stripe dashboard. This is the RECURRING monthly Price for the program subscription; global rate is $30/mo NZD.',
     }),
     defineField({
       name: 'scoringAttributes',
