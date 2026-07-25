@@ -474,16 +474,26 @@ body {
   font-weight: 500;
 }
 
-/* Success step */
-.qp-success {
-  padding: 40px 20px;
-  text-align: center;
-  max-width: 400px;
-  margin: 0 auto;
+/* Thanks / receipt page — post-Stripe subscription confirmation AND post-free-selection.
+ * Flex-centered so short content sits in the middle of the viewport (footer stays put
+ * at the bottom) while taller content flows naturally without overflow issues. */
+.qp-page-thanks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
 }
-.qp-success-check {
-  width: 64px;
-  height: 64px;
+.qp-thanks-container {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 8px 4px;
+  text-align: center;
+}
+.qp-thanks-check {
+  width: 72px;
+  height: 72px;
   margin: 0 auto 20px;
   border-radius: 50%;
   background: rgba(21, 101, 216, 0.10);
@@ -491,24 +501,216 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 36px;
   font-weight: 700;
 }
-.qp-success-title {
-  font-family: 'Barlow', sans-serif;
-  font-size: 26px;
+.qp-thanks-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 1.15;
+  color: var(--blue);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.qp-thanks-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--text);
   margin: 0 0 12px;
+  text-wrap: balance;
 }
-.qp-success-body {
+@media (min-width: 480px) {
+  .qp-thanks-title { font-size: 36px; }
+}
+.qp-thanks-sub {
   font-size: 15px;
   color: #3f4854;
   line-height: 1.55;
+  margin: 0 auto 32px;
+  max-width: 400px;
   font-weight: 500;
 }
+
+/* Receipt card */
+.qp-receipt {
+  background: white;
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  text-align: left;
+  margin: 0 auto 24px;
+}
+.qp-receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+}
+.qp-receipt-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.qp-receipt-date {
+  font-size: 12.5px;
+  color: #3f4854;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.qp-receipt-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.qp-receipt-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 14.5px;
+  color: var(--text);
+}
+.qp-receipt-line-title {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  flex: 1;
+  min-width: 0;
+}
+.qp-receipt-line-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 13.5px;
+  white-space: nowrap;
+  color: #3f4854;
+}
+.qp-receipt-line-price.free {
+  color: white;
+  background: var(--blue);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.qp-receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+.qp-receipt-total-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.qp-receipt-total-amount {
+  font-family: 'Barlow', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.qp-receipt-total-amount .qp-mo {
+  font-size: 13px;
+  color: #5b6470;
+  font-weight: 600;
+}
+.qp-receipt-note {
+  font-size: 12px;
+  color: #3f4854;
+  line-height: 1.5;
+  margin-top: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* What happens next panel */
+.qp-thanks-next {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: left;
+  margin: 0 auto 20px;
+}
+.qp-thanks-next-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+.qp-thanks-next-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  counter-reset: qp-step;
+}
+.qp-thanks-next-list li {
+  position: relative;
+  padding-left: 32px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  font-weight: 500;
+}
+.qp-thanks-next-list li::before {
+  counter-increment: qp-step;
+  content: counter(qp-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qp-thanks-next-list li strong {
+  font-weight: 700;
+  color: var(--text);
+}
+.qp-thanks-disclaimer {
+  font-size: 11.5px;
+  color: #3f4854;
+  line-height: 1.5;
+  margin: 12px auto 0;
+  max-width: 420px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* .qp-success — removed pass 10 UI polish. SuccessStep now uses the .qp-thanks-*
+ * receipt-style layout to match ProgramsThanks. */
 
 /* Loading / transient states */
 .qp-loading {

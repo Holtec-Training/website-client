@@ -26,7 +26,7 @@ describe('check-email', () => {
     await invoke({ email: 'jane@example.com', session_id: 's', src: 'nav' })
     const [url, init] = (fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0]
     expect(url).toBe('https://mock-n8n.example.test/webhook/check-email')
-    expect((init.headers as Record<string, string>)['X-Webhook-Secret']).toBe('test-secret')
+    expect((init.headers as Record<string, string>)['X-Program-Portal-Secret']).toBe('test-secret')
     expect(JSON.parse(init.body as string)).toEqual({ email: 'jane@example.com', session_id: 's', src: 'nav' })
   })
 

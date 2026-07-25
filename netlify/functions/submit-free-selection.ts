@@ -10,7 +10,7 @@ export const handler: Handler = async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(secret ? { 'X-Webhook-Secret': secret } : {}),
+        ...(secret ? { 'X-Program-Portal-Secret': secret } : {}),
       },
       body: event.body ?? '',
     })

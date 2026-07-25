@@ -1,8 +1,6 @@
 import type { Handler } from '@netlify/functions'
 import Stripe from 'stripe'
 
-const PROGRAM_PRICE_CENTS = 3000
-
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
 
@@ -36,7 +34,11 @@ export const handler: Handler = async (event) => {
 
   const m = s.metadata ?? {}
   const programIds = (m.program_ids ?? '').split(',').filter(Boolean)
-  const chargedCount = Math.max(0, programIds.length - 1)
+  const hasPriorClaim = m.has_prior_claim === 'true'
+  // Path B (fresh customer): first program is the one the promo code discounts to $0.
+  // Path B (prior-claim customer): no promo applied — all programs are paid.
+  const freeProgramId = hasPriorClaim ? '' : (programIds[0] ?? '')
+  const paidProgramIds = hasPriorClaim ? programIds : programIds.slice(1)
 
   const dossier = {
     first_name: m.first_name ?? '',
@@ -44,17 +46,23 @@ export const handler: Handler = async (event) => {
     email: s.customer_email ?? '',
     phone: m.phone ?? '',
     program_ids: programIds,
-    free_program_slug: programIds[0] ?? '',
-    paid_program_slugs: programIds.slice(1),
+    free_program_id: freeProgramId,
+    paid_program_ids: paidProgramIds,
     program_count: programIds.length,
     currency: s.currency ?? 'nzd',
-    monthly_amount_cents: chargedCount * PROGRAM_PRICE_CENTS,
+    // Stripe-authoritative amount — what Stripe actually billed on the first invoice,
+    // net of any discount code. Same value hits Milan's Stripe account.
+    // For our monthly billing case with no proration + coupon duration: forever,
+    // this ALSO equals the recurring monthly amount.
+    amount_cents: s.amount_total ?? 0,
+    has_prior_claim: hasPriorClaim,
     stripe_checkout_session_id: s.id,
     stripe_customer_id: typeof s.customer === 'string' ? s.customer : s.customer?.id ?? '',
     stripe_subscription_id: typeof s.subscription === 'string' ? s.subscription : s.subscription?.id ?? '',
     promotion_code: m.promotion_code ?? '',
     session_id: m.session_id ?? '',
     src: m.src ?? '',
+    location: m.location ?? '',
     subscribed_at: new Date((s.created ?? Math.floor(Date.now() / 1000)) * 1000).toISOString(),
   }
 
@@ -66,7 +74,7 @@ export const handler: Handler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(n8nSecret ? { 'X-Webhook-Secret': n8nSecret } : {}),
+          ...(n8nSecret ? { 'X-Program-Portal-Secret': n8nSecret } : {}),
         },
         body: JSON.stringify(dossier),
       })

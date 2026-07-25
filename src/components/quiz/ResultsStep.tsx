@@ -55,7 +55,7 @@ export default function ResultsStep({ matched, priorClaim, onSubmit }: Props) {
     <section className="qp-container">
       {priorClaim && (
         <div className="qp-prior-claim">
-          <strong>You've already had a free program.</strong> We sent <strong>{priorClaim.program_title}</strong> to your inbox on {priorClaim.claimed_at}. Any selections below are paid subscriptions at $30/month each — the first-program-free offer doesn't apply again. Need another copy of your original PDF? Email Milan directly.
+          <strong>You've already received a free program.</strong><br /> We sent <strong>{priorClaim.program_title}</strong> to your inbox on {priorClaim.claimed_at}. Any selections below are paid subscriptions at $30/month each — the first-program-free offer doesn't apply again. <br />Need another copy of your original PDF? Email Holtec directly.
         </div>
       )}
 

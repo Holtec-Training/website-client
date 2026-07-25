@@ -56,14 +56,14 @@ describe('Programs page (post-flow-reorder)', () => {
   })
   afterEach(() => { vi.unstubAllEnvs() })
 
-  it('fires page_viewed on mount with src from query', async () => {
+  it('fires landing_displayed when the Landing screen renders (src from query)', async () => {
     renderAt('/programs?src=poster-newmarket')
-    await waitFor(() => expect(fireFunnelEvent).toHaveBeenCalledWith('page_viewed', expect.objectContaining({ src: 'poster-newmarket' })))
+    await waitFor(() => expect(fireFunnelEvent).toHaveBeenCalledWith('landing_displayed', expect.objectContaining({ src: 'poster-newmarket' })))
   })
 
   it('defaults src to "direct" when missing', async () => {
     renderAt('/programs')
-    await waitFor(() => expect(fireFunnelEvent).toHaveBeenCalledWith('page_viewed', expect.objectContaining({ src: 'direct' })))
+    await waitFor(() => expect(fireFunnelEvent).toHaveBeenCalledWith('landing_displayed', expect.objectContaining({ src: 'direct' })))
   })
 
   it('shows "coming soon" when programPortalEnabled is false', async () => {
@@ -103,7 +103,9 @@ describe('Programs page (post-flow-reorder)', () => {
     await userEvent.click(await screen.findByRole('button', { name: /free program/i }))
 
     await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/free-selection', expect.anything()))
-    expect(await screen.findByText(/check your inbox/i)).toBeInTheDocument()
+    // Success page renders — assert on the distinctive title, not the eyebrow which
+    // repeats "check your inbox" in the step-by-step guidance below.
+    expect(await screen.findByText(/on its way/i)).toBeInTheDocument()
   })
 
   it('Path B (2+ programs) — POSTs /api/checkout with program_ids[], mounts embedded checkout with client_secret', async () => {
@@ -174,7 +176,7 @@ describe('Programs page (post-flow-reorder)', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Fat loss' }))
     await fillContact()
 
-    expect(await screen.findByText(/already had a free program/i)).toBeInTheDocument()
+    expect(await screen.findByText(/already received a free program/i)).toBeInTheDocument()
     expect(screen.getByText(/Fat Loss Blueprint/)).toBeInTheDocument()
     expect(screen.getByText(/2026-07-15/)).toBeInTheDocument()
   })

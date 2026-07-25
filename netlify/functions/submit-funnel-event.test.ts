@@ -19,11 +19,11 @@ describe('submit-funnel-event', () => {
     expect(res.statusCode).toBe(405)
   })
 
-  it('forwards body verbatim with X-Webhook-Secret', async () => {
+  it('forwards body verbatim with X-Program-Portal-Secret', async () => {
     await invoke({ event: 'page_viewed' })
     const [url, init] = (fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0]
     expect(url).toBe('https://mock-n8n.example.test/webhook/funnel-event')
-    expect((init.headers as Record<string, string>)['X-Webhook-Secret']).toBe('test-secret')
+    expect((init.headers as Record<string, string>)['X-Program-Portal-Secret']).toBe('test-secret')
     expect(init.body).toBe(JSON.stringify({ event: 'page_viewed' }))
   })
 

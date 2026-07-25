@@ -31,14 +31,19 @@ describe('fireFunnelEvent', () => {
     expect(body.user_agent).toBe(navigator.userAgent)
   })
 
-  it('passes through extras + email + program_id', async () => {
-    await fireFunnelEvent('recommendations_shown', {
+  it('passes through role fields + extras (but not PII fields)', async () => {
+    await fireFunnelEvent('results_displayed', {
       src: 'nav',
-      email: 'jane@example.com',
-      extras: { recommended: ['p1', 'p2'] },
+      matched_program_ids: ['fat-loss-blueprint', 'strength-5x5'],
+      extras: { source: 'quiz' },
     })
     const body = JSON.parse((fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0][1].body as string)
-    expect(body.email).toBe('jane@example.com')
-    expect(body.extras).toEqual({ recommended: ['p1', 'p2'] })
+    expect(body.matched_program_ids).toEqual(['fat-loss-blueprint', 'strength-5x5'])
+    expect(body.extras).toEqual({ source: 'quiz' })
+    // Type doesn't accept email/first_name/last_name/phone — those live in the Fulfilment Log.
+    expect(body.email).toBeUndefined()
+    expect(body.first_name).toBeUndefined()
+    expect(body.last_name).toBeUndefined()
+    expect(body.phone).toBeUndefined()
   })
 })

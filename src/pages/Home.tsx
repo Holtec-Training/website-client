@@ -20,7 +20,8 @@ export default function Home() {
             — fresh energy, real results, and the right fit for you.
           </p>
           <div className="home-btns">
-            <Link to="/trainers" className="btn-primary">Browse Trainers</Link>
+            <Link to="/programs?src=hero" className="btn-primary">Get Your Program</Link>
+            <Link to="/trainers" className="btn-secondary">Browse Trainers</Link>
             <Link to="/contact" className="btn-secondary">Connect</Link>
           </div>
         </div>

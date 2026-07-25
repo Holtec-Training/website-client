@@ -90,7 +90,7 @@ describe('ResultsStep (fresh customer)', () => {
 describe('ResultsStep (prior-claim customer)', () => {
   it('renders prior-claim banner and its content', () => {
     render(<ResultsStep matched={[p('a', 'Alpha')]} priorClaim={PRIOR} onSubmit={() => {}} />)
-    expect(screen.getByText(/already had a free program/i)).toBeInTheDocument()
+    expect(screen.getByText(/already received a free program/i)).toBeInTheDocument()
     expect(screen.getByText(/Fat Loss Blueprint/)).toBeInTheDocument()
     expect(screen.getByText(/2026-07-15/)).toBeInTheDocument()
   })

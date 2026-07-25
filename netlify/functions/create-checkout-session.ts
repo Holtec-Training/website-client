@@ -10,6 +10,7 @@ interface Body {
   program_ids: string[]
   session_id: string
   src: string
+  location?: string
   has_prior_claim?: boolean
 }
 
@@ -66,14 +67,20 @@ export const handler: Handler = async (event) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    ui_mode: 'embedded_page' as 'embedded',
+    ui_mode: 'embedded_page',
+    // Restrict to card + Link only. Without payment_method_types, Stripe infers
+    // available methods from your dashboard settings, which surfaces Klarna and
+    // other BNPL providers we don't want on a recurring subscription.
+    // Link is Stripe's own auto-fill for returning customers — good UX, keep it.
+    payment_method_types: ['card', 'link'],
     line_items: priceIds.map(price => ({ price, quantity: 1 })),
     customer_email: body.email,
     ...(promotionCodeId ? { discounts: [{ promotion_code: promotionCodeId }] } : {}),
-    return_url: 'https://holtectraining.co.nz/programs/thanks?cs={CHECKOUT_SESSION_ID}',
+    return_url: `${process.env.HOLTEC_ENDPOINT}/programs/thanks?cs={CHECKOUT_SESSION_ID}`,
     metadata: {
       session_id: body.session_id,
       src: body.src,
+      location: body.location ?? '',
       program_ids: body.program_ids.join(','),
       first_name: body.first_name,
       last_name: body.last_name,
@@ -85,6 +92,7 @@ export const handler: Handler = async (event) => {
       metadata: {
         session_id: body.session_id,
         src: body.src,
+        location: body.location ?? '',
         program_ids: body.program_ids.join(','),
         has_prior_claim: hasPriorClaim ? 'true' : 'false',
       },

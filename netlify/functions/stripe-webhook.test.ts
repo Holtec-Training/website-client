@@ -69,10 +69,13 @@ describe('stripe-webhook (pass 6 — subscription)', () => {
           subscription: 'sub_456',
           currency: 'nzd',
           created: 1721001600,
+          amount_total: 6000,
           metadata: {
             session_id: 's-uuid',
             src: 'poster-ellerslie',
+            location: 'ellerslie',
             program_ids: 'p1,p2,p3',
+            has_prior_claim: 'false',
             first_name: 'Jane',
             last_name: 'Doe',
             phone: '+64',
@@ -84,24 +87,58 @@ describe('stripe-webhook (pass 6 — subscription)', () => {
     await invoke('{}', 'sig')
     const [url, init] = (fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0]
     expect(url).toBe('https://mock-n8n.example.test/webhook/subscription-created')
-    expect((init.headers as Record<string, string>)['X-Webhook-Secret']).toBe('n8n-secret')
+    expect((init.headers as Record<string, string>)['X-Program-Portal-Secret']).toBe('n8n-secret')
     const body = JSON.parse(init.body as string)
     expect(body).toEqual({
       first_name: 'Jane', last_name: 'Doe', email: 'j@x.com', phone: '+64',
       program_ids: ['p1', 'p2', 'p3'],
-      free_program_slug: 'p1',
-      paid_program_slugs: ['p2', 'p3'],
+      free_program_id: 'p1',
+      paid_program_ids: ['p2', 'p3'],
       program_count: 3,
       currency: 'nzd',
-      monthly_amount_cents: 6000,  // (3 - 1) × $30
+      amount_cents: 6000,
+      has_prior_claim: false,
       stripe_checkout_session_id: 'cs_test_1',
       stripe_customer_id: 'cus_123',
       stripe_subscription_id: 'sub_456',
       promotion_code: 'ELLERSLIE',
       session_id: 's-uuid',
       src: 'poster-ellerslie',
+      location: 'ellerslie',
       subscribed_at: new Date(1721001600 * 1000).toISOString(),
     })
+  })
+
+  it('prior-claim path: all programs are paid, none free', async () => {
+    constructEvent.mockReturnValue({
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          mode: 'subscription',
+          id: 'cs_pc',
+          customer_email: 'p@c.com',
+          customer: 'cus_pc',
+          subscription: 'sub_pc',
+          currency: 'nzd',
+          created: 1721001600,
+          amount_total: 6000,
+          metadata: {
+            session_id: 's-pc',
+            src: 'nav',
+            location: '',
+            program_ids: 'x,y',
+            has_prior_claim: 'true',
+            first_name: '', last_name: '', phone: '', promotion_code: '',
+          },
+        },
+      },
+    })
+    await invoke('{}', 'sig')
+    const body = JSON.parse((fetch as unknown as { mock: { calls: Array<[string, RequestInit]> } }).mock.calls[0][1].body as string)
+    expect(body.free_program_id).toBe('')
+    expect(body.paid_program_ids).toEqual(['x', 'y'])
+    expect(body.has_prior_claim).toBe(true)
+    expect(body.amount_cents).toBe(6000)
   })
 
   it('handles customer/subscription as objects (not just string IDs)', async () => {
@@ -116,7 +153,8 @@ describe('stripe-webhook (pass 6 — subscription)', () => {
           subscription: { id: 'sub_obj_1' },
           currency: 'nzd',
           created: 1721000000,
-          metadata: { program_ids: 'a,b', first_name: '', last_name: '', phone: '', promotion_code: 'HOLTEC', session_id: '', src: '' },
+          amount_total: 3000,
+          metadata: { program_ids: 'a,b', has_prior_claim: 'false', first_name: '', last_name: '', phone: '', promotion_code: 'HOLTEC', session_id: '', src: '', location: '' },
         },
       },
     })

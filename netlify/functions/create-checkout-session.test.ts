@@ -98,6 +98,7 @@ describe('create-checkout-session (pass 6 — subscription)', () => {
     expect(arg.metadata).toEqual({
       session_id: 's-uuid',
       src: 'poster-ellerslie',
+      location: '',
       program_ids: 'a,b',
       first_name: 'Jane',
       last_name: 'Doe',
