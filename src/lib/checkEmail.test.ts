@@ -53,21 +53,21 @@ describe('checkEmail', () => {
   })
 })
 
-describe('checkEmail — production fail-open behaviour', () => {
+describe('checkEmail — live environment fail-open behaviour', () => {
   beforeEach(() => {
     sessionStorage.clear()
     sessionStorage.setItem('session_id', 'test-session')
-    // Simulate a production build — import.meta.env.DEV === false.
+    // Simulate a live environment build — import.meta.env.DEV === false.
     vi.stubEnv('DEV', false)
   })
 
-  it('fails open — returns available on network error in production', async () => {
+  it('fails open — returns available on network error in live environment', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network')))
     const r = await checkEmail('jane@example.com', 'nav')
     expect(r).toEqual({ status: 'available' })
   })
 
-  it('fails open — returns available on non-ok response in production', async () => {
+  it('fails open — returns available on non-ok response in live environment', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) }))
     const r = await checkEmail('jane@example.com', 'nav')
     expect(r).toEqual({ status: 'available' })
