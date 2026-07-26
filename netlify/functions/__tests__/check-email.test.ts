@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { handler } from './check-email'
+import { handler } from '../check-email'
 
 const invoke = (body: unknown, method = 'POST') =>
   (handler as unknown as (e: Record<string, unknown>) => Promise<{ statusCode: number; body: string }>)({

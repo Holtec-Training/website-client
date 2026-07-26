@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { handler } from './submit-free-selection'
+import { handler } from '../submit-free-selection'
 
 const invoke = (body: unknown, method = 'POST') =>
   (handler as unknown as (e: Record<string, unknown>) => Promise<{ statusCode: number; body: string }>)({

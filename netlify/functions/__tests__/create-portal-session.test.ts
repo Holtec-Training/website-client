@@ -7,7 +7,7 @@ vi.mock('stripe', () => ({
   },
 }))
 
-import { handler } from './create-portal-session'
+import { handler } from '../create-portal-session'
 
 const invoke = (
   body: unknown,

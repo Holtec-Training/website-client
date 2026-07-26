@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions'
+import { withSecurity } from './_lib/security'
 
-export const handler: Handler = async (event) => {
+const rawHandler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
   const url = process.env.N8N_FREE_SELECTION_URL
   const secret = process.env.N8N_FREE_SELECTION_SECRET
@@ -25,3 +26,9 @@ export const handler: Handler = async (event) => {
     return { statusCode: 500, body: 'Request failed' }
   }
 }
+
+export const handler = withSecurity({
+  endpointKey: 'free-selection',
+  rateLimit: { requests: 5, windowSeconds: 3600 },
+  requireTurnstile: true,
+}, rawHandler)

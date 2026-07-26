@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions'
+import { withSecurity } from './_lib/security'
 
-export const handler: Handler = async (event) => {
+const rawHandler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
   const url = process.env.N8N_CHECK_EMAIL_URL
   const secret = process.env.N8N_CHECK_EMAIL_SECRET
@@ -25,3 +26,12 @@ export const handler: Handler = async (event) => {
     return { statusCode: 500, body: 'Request failed' }
   }
 }
+
+// No Turnstile — fires as part of ContactStep flow where a challenge would add
+// friction to the normal quiz journey. Rate limit is generous because power
+// users may retry after mistyping their email.
+export const handler = withSecurity({
+  endpointKey: 'check-email',
+  rateLimit: { requests: 20, windowSeconds: 3600 },
+  requireTurnstile: false,
+}, rawHandler)

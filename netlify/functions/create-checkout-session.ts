@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions'
 import Stripe from 'stripe'
 import { sanityServer } from './_lib/sanityServer'
+import { withSecurity } from './_lib/security'
 
 interface Body {
   first_name: string
@@ -17,7 +18,7 @@ interface Body {
 interface CouponMapping { src: string; promotionCode: string }
 interface SiteConfig { defaultPromotionCode?: string; couponMappings?: CouponMapping[] }
 
-export const handler: Handler = async (event) => {
+const rawHandler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
   if (!process.env.STRIPE_SECRET_KEY) return { statusCode: 500, body: 'Stripe not configured' }
 
@@ -105,3 +106,9 @@ export const handler: Handler = async (event) => {
     body: JSON.stringify({ client_secret: session.client_secret }),
   }
 }
+
+export const handler = withSecurity({
+  endpointKey: 'checkout',
+  rateLimit: { requests: 10, windowSeconds: 3600 },
+  requireTurnstile: true,
+}, rawHandler)

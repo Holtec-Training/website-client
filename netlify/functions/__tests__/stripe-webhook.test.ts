@@ -9,7 +9,7 @@ vi.mock('stripe', () => {
   return { default: StripeMock }
 })
 
-import { handler } from './stripe-webhook'
+import { handler } from '../stripe-webhook'
 
 const invoke = (body: string, signature: string, method = 'POST', isBase64 = false) =>
   (handler as unknown as (e: Record<string, unknown>) => Promise<{ statusCode: number; body: string }>)({

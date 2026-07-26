@@ -12,11 +12,11 @@ vi.mock('stripe', () => ({
     promotionCodes = { list: promoList }
   },
 }))
-vi.mock('./_lib/sanityServer', () => ({
+vi.mock('../_lib/sanityServer', () => ({
   sanityServer: { fetch: (...a: unknown[]) => sanityFetch(...a) },
 }))
 
-import { handler } from './create-checkout-session'
+import { handler } from '../create-checkout-session'
 
 const invoke = (body: unknown, method = 'POST') =>
   (handler as unknown as (e: Record<string, unknown>) => Promise<{ statusCode: number; body: string }>)({
