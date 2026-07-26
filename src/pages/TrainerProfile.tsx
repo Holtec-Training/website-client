@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { useParams, Link } from 'react-router-dom'
 import { MapPin, User, ArrowLeft, Award } from 'lucide-react'
 import { sanityClient } from '../lib/sanity'
@@ -50,13 +51,8 @@ export default function TrainerProfile() {
 
   if (loading) {
     return (
-      <div
-        className="max-w-[1100px] mx-auto px-12 py-24 flex items-center justify-center max-[768px]:px-5"
-        style={{ color: 'var(--muted)' }}
-      >
-        <span className="font-barlow-condensed font-semibold text-[16px] uppercase tracking-[0.05em] opacity-60">
-          Loading...
-        </span>
+      <div className="max-w-[1100px] mx-auto px-12 py-24 max-[768px]:px-5">
+        <LoadingSpinner label="Loading profile…" size="lg" />
       </div>
     )
   }

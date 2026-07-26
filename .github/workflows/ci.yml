@@ -1,0 +1,49 @@
+name: CI
+
+# Runs on every push to any branch (so feature-branch commits get checked)
+# AND on any PR opened against main (so review-time checks are visible on the PR).
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+# Cancel any in-flight run for the same ref when a new commit lands.
+# Saves CI minutes when you push twice quickly.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Type check + tests + build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Type check runs separately so tsc errors surface as their own failing step
+      # in the GitHub UI — easier to spot than being buried in test output.
+      - name: Type check
+        run: npx tsc -b
+
+      # 130 vitest tests covering React components, lib helpers, and Netlify Functions.
+      # `npm test` = `vitest run` (single-shot, exits with non-zero on failure).
+      - name: Unit + integration tests
+        run: npm test
+
+      # Catches Vite build regressions (import-order issues, tree-shaking, etc)
+      # that can pass tsc + tests but blow up in the actual deploy build.
+      - name: Production build
+        run: npm run build

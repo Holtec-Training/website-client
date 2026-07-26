@@ -83,6 +83,684 @@ body {
 }
 
 /* ════════════════════════════════════════
+   SITE-WIDE UTILITIES — LoadingSpinner, sr-only
+════════════════════════════════════════ */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px;
+}
+.spinner-ring {
+  border-radius: 50%;
+  border-style: solid;
+  border-color: rgba(21, 101, 216, 0.15);
+  border-top-color: var(--blue);
+  animation: spinner-spin 0.8s linear infinite;
+}
+.spinner-sm .spinner-ring { width: 20px; height: 20px; border-width: 2px; }
+.spinner-md .spinner-ring { width: 32px; height: 32px; border-width: 3px; }
+.spinner-lg .spinner-ring { width: 48px; height: 48px; border-width: 4px; }
+.spinner-label {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  color: #3f4854;
+  font-weight: 500;
+  text-align: center;
+}
+@keyframes spinner-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner-ring { animation-duration: 2.4s; }
+}
+
+/* ════════════════════════════════════════
+   PROGRAM PORTAL — /programs
+   Scoped background gradient + shared design system for the sales-funnel flow.
+   Everything named .qp-* is /programs-only.
+════════════════════════════════════════ */
+
+.qp-page {
+  min-height: calc(100vh - 88px);
+  background: linear-gradient(158deg, #f7fafc 0%, #eaf1f9 55%, #dfe9f5 100%);
+  padding: 24px 16px 56px;
+}
+.qp-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Landing */
+.qp-landing { padding: 24px 4px 40px; }
+.qp-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.qp-landing-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+@media (min-width: 480px) {
+  .qp-landing-title { font-size: 44px; }
+}
+.qp-landing-sub {
+  font-size: 16px;
+  color: #3f4854;
+  line-height: 1.55;
+  margin: 0 0 32px;
+  max-width: 380px;
+  font-weight: 500;
+}
+
+/* Progress arc */
+.qp-arc {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.qp-arc svg {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+.qp-arc-track { fill: none; stroke: rgba(21, 101, 216, 0.15); stroke-width: 4; }
+.qp-arc-head {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+.qp-arc-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  color: #3f4854;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.qp-arc-strong {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+/* Question typography */
+.qp-question {
+  font-family: 'Barlow', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 24px;
+  color: var(--text);
+}
+@media (min-width: 480px) {
+  .qp-question { font-size: 30px; }
+}
+
+/* Options */
+.qp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.qp-option {
+  padding: 15px 18px;
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  text-align: left;
+  font-size: 15px;
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+  min-height: 44px;
+  width: 100%;
+}
+.qp-option:hover { background: rgba(255, 255, 255, 0.95); }
+.qp-option.selected {
+  background: var(--blue);
+  color: white;
+  box-shadow: 0 10px 24px rgba(21, 101, 216, 0.28);
+  font-weight: 600;
+}
+.qp-option .qp-chevron { opacity: 0; font-size: 14px; transition: opacity 0.15s ease; }
+.qp-option.selected .qp-chevron { opacity: 1; }
+
+/* Form fields */
+.qp-form { display: flex; flex-direction: column; gap: 16px; }
+.qp-field { display: block; }
+.qp-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.qp-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  min-height: 48px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+}
+.qp-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(21, 101, 216, 0.15);
+}
+
+/* Primary CTA */
+.qp-cta {
+  width: 100%;
+  padding: 15px 20px;
+  background: var(--blue);
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 48px;
+  transition: background 0.15s ease;
+}
+.qp-cta:hover { background: #0d4396; }
+.qp-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Results header */
+.qp-results-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  color: var(--blue);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.qp-results-h2 {
+  font-family: 'Barlow', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--text);
+}
+.qp-results-sub {
+  font-size: 13.5px;
+  color: #3f4854;
+  margin: 0 0 20px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Prior-claim warning */
+.qp-prior-claim {
+  padding: 12px 14px;
+  background: #fff8e1;
+  border: 1px solid #f0c85a;
+  border-radius: 12px;
+  font-size: 12.5px;
+  color: #4d3800;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.qp-prior-claim strong { color: #0d0f14; font-weight: 700; }
+
+/* Program list */
+.qp-program-list { display: flex; flex-direction: column; gap: 10px; }
+.qp-program-card {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.90);
+  border-radius: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  min-height: 44px;
+  width: 100%;
+}
+.qp-program-card:hover { background: rgba(255, 255, 255, 1); }
+.qp-program-card.selected {
+  border-color: var(--blue);
+  background: white;
+  box-shadow: 0 6px 16px rgba(21, 101, 216, 0.12);
+}
+.qp-program-card input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--blue);
+  margin: 0;
+  flex-shrink: 0;
+}
+.qp-program-info { flex: 1; min-width: 0; }
+.qp-program-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 2px;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+.qp-program-sub {
+  font-size: 12.5px;
+  color: #3f4854;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.qp-program-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--text);
+}
+.qp-program-price.free {
+  color: white;
+  background: var(--blue);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* Cart panel — Option B (elevated white) */
+.qp-cart {
+  margin-top: 20px;
+  padding: 18px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+}
+.qp-cart-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 12px;
+}
+.qp-cart-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #3f4854;
+  font-weight: 700;
+}
+.qp-cart-amount {
+  font-family: 'Barlow', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.qp-cart-amount .qp-mo {
+  font-size: 14px;
+  color: #5b6470;
+  font-weight: 600;
+}
+.qp-cart-note {
+  font-size: 12.5px;
+  color: #3f4854;
+  line-height: 1.55;
+  margin: 0 0 14px;
+  font-weight: 500;
+}
+.qp-cart-disclaimer {
+  font-size: 11.5px;
+  color: #3f4854;
+  margin-top: 12px;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Thanks / receipt page — post-Stripe subscription confirmation AND post-free-selection.
+ * Flex-centered so short content sits in the middle of the viewport (footer stays put
+ * at the bottom) while taller content flows naturally without overflow issues. */
+.qp-page-thanks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.qp-thanks-container {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 8px 4px;
+  text-align: center;
+}
+.qp-thanks-check {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: rgba(21, 101, 216, 0.10);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+}
+.qp-thanks-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.qp-thanks-title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+@media (min-width: 480px) {
+  .qp-thanks-title { font-size: 36px; }
+}
+.qp-thanks-sub {
+  font-size: 15px;
+  color: #3f4854;
+  line-height: 1.55;
+  margin: 0 auto 32px;
+  max-width: 400px;
+  font-weight: 500;
+}
+
+/* Receipt card */
+.qp-receipt {
+  background: white;
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  text-align: left;
+  margin: 0 auto 24px;
+}
+.qp-receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+}
+.qp-receipt-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.qp-receipt-date {
+  font-size: 12.5px;
+  color: #3f4854;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.qp-receipt-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.qp-receipt-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 14.5px;
+  color: var(--text);
+}
+.qp-receipt-line-title {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  flex: 1;
+  min-width: 0;
+}
+.qp-receipt-line-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 13.5px;
+  white-space: nowrap;
+  color: #3f4854;
+}
+.qp-receipt-line-price.free {
+  color: white;
+  background: var(--blue);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.qp-receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+.qp-receipt-total-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.qp-receipt-total-amount {
+  font-family: 'Barlow', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.qp-receipt-total-amount .qp-mo {
+  font-size: 13px;
+  color: #5b6470;
+  font-weight: 600;
+}
+.qp-receipt-note {
+  font-size: 12px;
+  color: #3f4854;
+  line-height: 1.5;
+  margin-top: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* What happens next panel */
+.qp-thanks-next {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: left;
+  margin: 0 auto 20px;
+}
+.qp-thanks-next-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+.qp-thanks-next-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  counter-reset: qp-step;
+}
+.qp-thanks-next-list li {
+  position: relative;
+  padding-left: 32px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  font-weight: 500;
+}
+.qp-thanks-next-list li::before {
+  counter-increment: qp-step;
+  content: counter(qp-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qp-thanks-next-list li strong {
+  font-weight: 700;
+  color: var(--text);
+}
+.qp-thanks-disclaimer {
+  font-size: 11.5px;
+  color: #3f4854;
+  line-height: 1.5;
+  margin: 12px auto 0;
+  max-width: 420px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* .qp-success — removed pass 10 UI polish. SuccessStep now uses the .qp-thanks-*
+ * receipt-style layout to match ProgramsThanks. */
+
+/* Loading / transient states */
+.qp-loading {
+  padding: 48px 20px;
+  text-align: center;
+  max-width: 320px;
+  margin: 0 auto;
+  color: #3f4854;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* Embedded checkout */
+.qp-back-link {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: 8px 4px;
+  margin-bottom: 12px;
+  color: var(--blue);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 44px;
+}
+.qp-back-link:hover { color: #0d4396; }
+.qp-checkout-frame {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 4px;
+}
+
+/* Meta row (question counter etc.) */
+.qp-meta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  color: #3f4854;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* ════════════════════════════════════════
    HOME PAGE
 ════════════════════════════════════════ */
 

@@ -2,6 +2,16 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  # Netlify's Secrets Scanning blocks deploys when it finds any env-var VALUE
+  # inside the built output. It doesn't distinguish "actual secret" from
+  # "public identifier that happens to match a common word".
+  #
+  # The Sanity project ID + dataset legitimately appear in the browser bundle
+  # (the browser needs them to fetch content). Their values are NOT secrets — Sanity's docs say public read tokens
+  # + project IDs are safe to expose. Omit them from the scanner:
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SANITY_PROJECT_ID,VITE_SANITY_DATASET,SANITY_DATASET,VITE_STRIPE_PUBLISHABLE_KEY,VITE_TURNSTILE_SITE_KEY,VITE_CHECK_EMAIL_ENABLED,HOLTEC_ENDPOINT,PROGRAM_PORTAL_RETURN_URL,NETLIFY_ALLOWED_ORIGINS"
+
 [build.processing]
   skip_processing = false
 
@@ -14,6 +24,30 @@
 [[redirects]]
   from = "/api/contact"
   to = "/.netlify/functions/contact"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/funnel-event"
+  to = "/.netlify/functions/submit-funnel-event"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/free-selection"
+  to = "/.netlify/functions/submit-free-selection"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/checkout"
+  to = "/.netlify/functions/create-checkout-session"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/check-email"
+  to = "/.netlify/functions/check-email"
   status = 200
   force = true
 
